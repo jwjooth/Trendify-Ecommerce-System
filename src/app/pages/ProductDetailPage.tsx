@@ -1,27 +1,48 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { ArrowLeft, ShoppingCart, Star, Truck, Shield, RefreshCw } from 'lucide-react';
-import { useProduct } from '../hooks/useProducts';
-import { useCart } from '../context/CartContext';
-import { formatCurrency } from '../utils/currency';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Separator } from '../components/ui/separator';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router";
+import {
+  ArrowLeft,
+  ShoppingCart,
+  Star,
+  Truck,
+  Shield,
+  RefreshCw,
+} from "lucide-react";
+import { useProduct } from "../hooks/useProducts";
+import { useCart } from "../context/CartContext";
+import { formatCurrency } from "../utils/currency";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Separator } from "../components/ui/separator";
+import { toast } from "sonner";
 
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const product = useProduct(id!);
+  const { product, loading, error } = useProduct(id!);
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
 
-  if (!product) {
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="animate-pulse">
+          <div className="bg-gray-200 rounded-lg h-64 w-64 mx-auto mb-4"></div>
+          <div className="bg-gray-200 rounded h-8 w-48 mx-auto mb-2"></div>
+          <div className="bg-gray-200 rounded h-4 w-32 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
-        <p className="text-muted-foreground mb-6">The product you're looking for doesn't exist.</p>
-        <Button onClick={() => navigate('/')}>Back to Products</Button>
+        <p className="text-muted-foreground mb-6">
+          {error || "The product you're looking for doesn't exist."}
+        </p>
+        <Button onClick={() => navigate("/")}>Back to Products</Button>
       </div>
     );
   }
@@ -33,7 +54,7 @@ export const ProductDetailPage: React.FC = () => {
 
   const handleBuyNow = () => {
     addToCart(product, quantity);
-    navigate('/cart');
+    navigate("/cart");
   };
 
   const incrementQuantity = () => {
@@ -50,11 +71,7 @@ export const ProductDetailPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Button
-        variant="ghost"
-        onClick={() => navigate(-1)}
-        className="mb-6"
-      >
+      <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back
       </Button>
@@ -76,7 +93,7 @@ export const ProductDetailPage: React.FC = () => {
               {product.category}
             </Badge>
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-            
+
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
@@ -84,17 +101,21 @@ export const ProductDetailPage: React.FC = () => {
                     key={i}
                     className={`w-5 h-5 ${
                       i < Math.floor(product.rating)
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-300'
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
               </div>
               <span className="font-medium">{product.rating}</span>
-              <span className="text-muted-foreground">({product.reviewCount} reviews)</span>
+              <span className="text-muted-foreground">
+                ({product.reviewCount} reviews)
+              </span>
             </div>
 
-            <p className="text-4xl font-bold mb-6">{formatCurrency(product.price)}</p>
+            <p className="text-4xl font-bold mb-6">
+              {formatCurrency(product.price)}
+            </p>
           </div>
 
           <Separator className="my-6" />
@@ -125,11 +146,13 @@ export const ProductDetailPage: React.FC = () => {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
               <span className="font-semibold">Stock:</span>
-              <Badge variant={product.stock > 20 ? 'default' : 'destructive'}>
+              <Badge variant={product.stock > 20 ? "default" : "destructive"}>
                 {product.stock} available
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">SKU: {product.sku}</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              SKU: {product.sku}
+            </p>
 
             <div className="flex items-center gap-4 mb-6">
               <span className="font-semibold">Quantity:</span>

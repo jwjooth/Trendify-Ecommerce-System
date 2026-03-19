@@ -1,21 +1,17 @@
-import { createBrowserRouter } from 'react-router';
-import { Layout } from './components/Layout';
-import { ProductsPage } from './pages/ProductsPage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
-import { CartPage } from './pages/CartPage';
-import { CheckoutPage } from './pages/CheckoutPage';
-import { OrderConfirmationPage } from './pages/OrderConfirmationPage';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
-import { NotFoundPage } from './pages/NotFoundPage';
+import { createBrowserRouter, RouteObject } from "react-router";
+import { Layout } from "./components/Layout";
+import { ProductsPage } from "./pages/ProductsPage";
+import { ProductDetailPage } from "./pages/ProductDetailPage";
+import { CartPage } from "./pages/CartPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
+import { OrderConfirmationPage } from "./pages/OrderConfirmationPage";
+import { AboutPage } from "./pages/AboutPage";
+import { ContactPage } from "./pages/ContactPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
-/**
- * Application routing configuration
- * Using React Router's data mode for better code splitting and data loading
- */
-export const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
-    path: '/',
+    path: "/",
     Component: Layout,
     children: [
       {
@@ -23,33 +19,39 @@ export const router = createBrowserRouter([
         Component: ProductsPage,
       },
       {
-        path: 'product/:id',
+        path: "product/:id",
         Component: ProductDetailPage,
       },
       {
-        path: 'cart',
+        path: "cart",
         Component: CartPage,
       },
       {
-        path: 'checkout',
+        path: "checkout",
         Component: CheckoutPage,
       },
       {
-        path: 'order-confirmation/:id',
+        path: "order-confirmation/:id",
         Component: OrderConfirmationPage,
       },
       {
-        path: 'about',
+        path: "about",
         Component: AboutPage,
       },
       {
-        path: 'contact',
+        path: "contact",
         Component: ContactPage,
       },
       {
-        path: '*',
+        path: "*",
         Component: NotFoundPage,
       },
     ],
   },
-]);
+];
+
+export const router = createBrowserRouter(routes, {
+  future: {
+    v7_normalizeFormMethod: true,
+  },
+});

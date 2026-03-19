@@ -1,63 +1,72 @@
-import React, { useState } from 'react';
-import { useSearchParams } from 'react-router';
-import { Search, SlidersHorizontal } from 'lucide-react';
-import { ProductCard } from '../components/ProductCard';
-import { useProducts } from '../hooks/useProducts';
-import { ProductCategory, ProductFilters, SortOption } from '../types/product';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
+import React, { useState } from "react";
+import { useSearchParams } from "react-router";
+import { Search, SlidersHorizontal } from "lucide-react";
+import { ProductCard } from "../components/ProductCard";
+import { useProducts } from "../hooks/useProducts";
+import { ProductCategory, ProductFilters, SortOption } from "../service/type";
+import { Input } from "../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
 
 const CATEGORIES: { value: ProductCategory; label: string }[] = [
-  { value: 'electronics', label: 'Electronics' },
-  { value: 'clothing', label: 'Clothing' },
-  { value: 'books', label: 'Books' },
-  { value: 'home', label: 'Home' },
-  { value: 'sports', label: 'Sports' },
-  { value: 'beauty', label: 'Beauty' },
+  { value: "electronics", label: "Electronics" },
+  { value: "clothing", label: "Clothing" },
+  { value: "books", label: "Books" },
+  { value: "home", label: "Home" },
+  { value: "sports", label: "Sports" },
+  { value: "beauty", label: "Beauty" },
+  { value: "accessories", label: "Accessories" },
 ];
 
 export const ProductsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory | undefined>(
-    (searchParams.get('category') as ProductCategory) || undefined
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
   );
-  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [selectedCategory, setSelectedCategory] = useState<
+    ProductCategory | undefined
+  >((searchParams.get("category") as ProductCategory) || undefined);
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
 
   const filters: ProductFilters = {
     searchQuery: searchQuery || undefined,
     category: selectedCategory,
   };
 
-  const { products, totalCount } = useProducts(filters, sortBy);
+  const { products, loading, error, totalCount } = useProducts(filters, sortBy);
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     const params = new URLSearchParams(searchParams);
     if (value) {
-      params.set('search', value);
+      params.set("search", value);
     } else {
-      params.delete('search');
+      params.delete("search");
     }
     setSearchParams(params);
   };
 
-  const handleCategoryChange = (category: ProductCategory | 'all') => {
-    const newCategory = category === 'all' ? undefined : category;
+  const handleCategoryChange = (category: ProductCategory | "all") => {
+    const newCategory = category === "all" ? undefined : category;
     setSelectedCategory(newCategory);
     const params = new URLSearchParams(searchParams);
     if (newCategory) {
-      params.set('category', newCategory);
+      params.set("category", newCategory);
     } else {
-      params.delete('category');
+      params.delete("category");
     }
     setSearchParams(params);
   };
 
   const clearFilters = () => {
-    setSearchQuery('');
+    setSearchQuery("");
     setSelectedCategory(undefined);
     setSearchParams({});
   };
@@ -90,8 +99,10 @@ export const ProductsPage: React.FC = () => {
 
           {/* Category Filter */}
           <Select
-            value={selectedCategory || 'all'}
-            onValueChange={(value) => handleCategoryChange(value as ProductCategory | 'all')}
+            value={selectedCategory || "all"}
+            onValueChange={(value) =>
+              handleCategoryChange(value as ProductCategory | "all")
+            }
           >
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Category" />
@@ -107,7 +118,10 @@ export const ProductsPage: React.FC = () => {
           </Select>
 
           {/* Sort */}
-          <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+          <Select
+            value={sortBy}
+            onValueChange={(value) => setSortBy(value as SortOption)}
+          >
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -123,11 +137,11 @@ export const ProductsPage: React.FC = () => {
         {/* Active Filters */}
         {hasActiveFilters && (
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm text-muted-foreground">Active filters:</span>
+            <span className="text-sm text-muted-foreground">
+              Active filters:
+            </span>
             {searchQuery && (
-              <Badge variant="secondary">
-                Search: {searchQuery}
-              </Badge>
+              <Badge variant="secondary">Search: {searchQuery}</Badge>
             )}
             {selectedCategory && (
               <Badge variant="secondary" className="capitalize">
@@ -143,13 +157,36 @@ export const ProductsPage: React.FC = () => {
 
       {/* Results Count */}
       <div className="mb-6">
-        <p className="text-sm text-muted-foreground">
-          Showing {totalCount} {totalCount === 1 ? 'product' : 'products'}
-        </p>
+        {loading ? (
+          <p className="text-sm text-muted-foreground">Loading products...</p>
+        ) : error ? (
+          <p className="text-sm text-red-600">Error: {error}</p>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Showing {totalCount} {totalCount === 1 ? "product" : "products"}
+          </p>
+        )}
       </div>
 
       {/* Product Grid */}
-      {products.length > 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div key={index} className="animate-pulse">
+              <div className="bg-gray-200 rounded-lg h-64 mb-4"></div>
+              <div className="bg-gray-200 rounded h-4 mb-2"></div>
+              <div className="bg-gray-200 rounded h-4 w-3/4"></div>
+            </div>
+          ))}
+        </div>
+      ) : error ? (
+        <div className="text-center py-16">
+          <div className="text-red-500 mb-4">⚠️</div>
+          <h3 className="text-lg font-semibold mb-2">Error loading products</h3>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Try Again</Button>
+        </div>
+      ) : products.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -159,7 +196,9 @@ export const ProductsPage: React.FC = () => {
         <div className="text-center py-16">
           <SlidersHorizontal className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">No products found</h3>
-          <p className="text-muted-foreground mb-4">Try adjusting your filters or search query</p>
+          <p className="text-muted-foreground mb-4">
+            Try adjusting your filters or search query
+          </p>
           <Button onClick={clearFilters}>Clear Filters</Button>
         </div>
       )}
