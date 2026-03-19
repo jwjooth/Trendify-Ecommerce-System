@@ -1,8 +1,3 @@
-/**
- * Currency formatting utilities
- * Centralized for consistency and easy localization
- */
-
 export const formatCurrency = (amount: number, currency: string = 'USD'): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -17,7 +12,7 @@ export const calculateTax = (subtotal: number, taxRate: number = 0.08): number =
 };
 
 export const calculateShipping = (subtotal: number): number => {
-  if (subtotal >= 100) return 0; // Free shipping over $100
+  if (subtotal >= 100) return 0;
   return 9.99;
 };
 

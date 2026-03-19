@@ -1,8 +1,3 @@
-/**
- * Core type definitions for e-commerce domain models
- * Following DDD (Domain-Driven Design) principles
- */
-
 export interface Product {
   id: string;
   name: string;
@@ -18,13 +13,14 @@ export interface Product {
   updatedAt: Date;
 }
 
-export type ProductCategory = 
-  | 'electronics'
-  | 'clothing'
-  | 'books'
-  | 'home'
-  | 'sports'
-  | 'beauty';
+export type ProductCategory =
+  | "electronics"
+  | "clothing"
+  | "books"
+  | "home"
+  | "sports"
+  | "beauty"
+  | "accessories";
 
 export interface CartItem {
   product: Product;
@@ -50,12 +46,12 @@ export interface Order {
   createdAt: Date;
 }
 
-export type OrderStatus = 
-  | 'pending'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled';
+export type OrderStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 export interface Address {
   fullName: string;
@@ -68,11 +64,11 @@ export interface Address {
   phone: string;
 }
 
-export type PaymentMethod = 
-  | 'credit_card'
-  | 'debit_card'
-  | 'paypal'
-  | 'apple_pay';
+export type PaymentMethod =
+  | "credit_card"
+  | "debit_card"
+  | "paypal"
+  | "apple_pay";
 
 export interface ProductFilters {
   category?: ProductCategory;
@@ -82,8 +78,4 @@ export interface ProductFilters {
   searchQuery?: string;
 }
 
-export type SortOption = 
-  | 'price-asc'
-  | 'price-desc'
-  | 'rating'
-  | 'newest';
+export type SortOption = "price-asc" | "price-desc" | "rating" | "newest";
