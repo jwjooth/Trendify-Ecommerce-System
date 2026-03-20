@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Product, ProductFilters, SortOption } from "../service/type";
 import { getAllProducts, getProductById } from "../service";
 
@@ -9,126 +9,113 @@ export const useProducts = (
   page?: number,
 ) => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Debounce search queries to prevent excessive API calls
-  const [debouncedFilters, setDebouncedFilters] = useState(filters);
+  const stableFilters = useMemo(() => filters ?? {}, [filters]);
+  const [debouncedFilters, setDebouncedFilters] = useState(stableFilters);
 
   useEffect(() => {
-    const timer = setTimeout(
-      () => {
-        setDebouncedFilters(filters);
-      },
-      filters?.searchQuery ? 300 : 0,
-    ); // 300ms debounce for search, instant for other filters
-
+    const timer = setTimeout(() => {
+      setDebouncedFilters(stableFilters);
+    }, 300);
     return () => clearTimeout(timer);
-  }, [filters]);
+  }, [stableFilters]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getAllProducts(
-          debouncedFilters,
-          sortBy,
-          limit,
-          page,
-        );
-        setProducts(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch products",
-        );
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const abortRef = useRef<AbortController | null>(null);
+  const isFetchingRef = useRef(false);
 
-    fetchProducts();
-  }, [debouncedFilters, sortBy, limit, page]);
+  const fetchProducts = useCallback(async () => {
+    if (isFetchingRef.current) return;
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
-  const refetch = useCallback(() => {
+    isFetchingRef.current = true;
     setLoading(true);
     setError(null);
-    getAllProducts(debouncedFilters, sortBy, limit, page)
-      .then(setProducts)
-      .catch((err) => {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch products",
-        );
-        console.error("Error refetching products:", err);
-      })
-      .finally(() => setLoading(false));
+
+    try {
+      const data = await getAllProducts(debouncedFilters, sortBy, limit, page);
+
+      setProducts(data);
+    } catch (err) {
+      if ((err as any)?.name === "AbortError") return;
+
+      setError(err instanceof Error ? err.message : "Failed to fetch products");
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+      isFetchingRef.current = false;
+    }
   }, [debouncedFilters, sortBy, limit, page]);
+
+  useEffect(() => {
+    fetchProducts();
+
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, [fetchProducts]);
 
   return {
     products,
     loading,
     error,
     totalCount: products.length,
-    refetch,
+    refetch: fetchProducts,
   };
 };
 
 export const useProduct = (productId: string) => {
   const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const abortRef = useRef<AbortController | null>(null);
+
+  const fetchProduct = useCallback(async () => {
     if (!productId) {
       setProduct(null);
-      setLoading(false);
       return;
     }
 
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getProductById(productId);
-        setProduct(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch product",
-        );
-        console.error("Error fetching product:", err);
-        setProduct(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
-    fetchProduct();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getProductById(productId);
+      setProduct(data);
+    } catch (err) {
+      if ((err as any)?.name === "AbortError") return;
+
+      setError(err instanceof Error ? err.message : "Failed to fetch product");
+      setProduct(null);
+      console.error("Fetch product error:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [productId]);
+
+  useEffect(() => {
+    fetchProduct();
+
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, [fetchProduct]);
 
   return {
     product,
     loading,
     error,
-    refetch: () => {
-      if (!productId) return;
-      setLoading(true);
-      setError(null);
-      getProductById(productId)
-        .then(setProduct)
-        .catch((err) => {
-          setError(
-            err instanceof Error ? err.message : "Failed to fetch product",
-          );
-          console.error("Error refetching product:", err);
-          setProduct(null);
-        })
-        .finally(() => setLoading(false));
-    },
+    refetch: fetchProduct,
   };
 };
 
-// Hook for searching products
 export const useProductSearch = (
   searchQuery: string,
   filters?: ProductFilters,
@@ -145,17 +132,15 @@ export const useProductSearch = (
   return useProducts(searchFilters, sortBy);
 };
 
-// Hook for featured products
 export const useFeaturedProducts = (limit: number = 10) => {
-  return useProducts({ minRating: 4.0 }, "rating", limit);
+  const filters = useMemo(() => ({ minRating: 4.0 }), []);
+  return useProducts(filters, "rating", limit);
 };
 
-// Hook for new products
 export const useNewProducts = (limit: number = 10) => {
   return useProducts(undefined, "newest", limit);
 };
 
-// Hook for products by category
 export const useProductsByCategory = (
   category: string,
   sortBy?: SortOption,
