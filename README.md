@@ -1,7 +1,5 @@
 # Trendify - Modern E-Commerce System
 
-![Trendify Banner](https://via.placeholder.com/800x200/4F46E5/FFFFFF?text=Trendify+E-Commerce) <!-- Replace with actual banner -->
-
 A stunning, animated e-commerce platform that brings fashion to life. Built with cutting-edge technologies for a seamless shopping experience, featuring smooth animations, beautiful UI components, and modern design principles.
 
 **Designed with ❤️ by [Jordan Theovandy](https://github.com/jwjooth)**
