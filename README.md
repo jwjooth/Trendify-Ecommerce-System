@@ -4,7 +4,7 @@
 
 A stunning, animated e-commerce platform that brings fashion to life. Built with cutting-edge technologies for a seamless shopping experience, featuring smooth animations, beautiful UI components, and modern design principles.
 
-**Designed with ❤️ by [Jordan Theovandy](https://github.com/jordantheovandy)**
+**Designed with ❤️ by [Jordan Theovandy](https://github.com/jwjooth)**
 
 ## ✨ Features
 
