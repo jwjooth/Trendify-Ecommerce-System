@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { Store, Users, Award, Star, TrendingUp, Shield } from "lucide-react";
 import { getTestimonials } from "../service";
 import { Testimonial as TestimonialType } from "../service/type";
@@ -7,6 +8,29 @@ import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { stats, team } from "../lib/constant";
+=======
+import {
+  Store,
+  Users,
+  Award,
+  Heart,
+  Star,
+  TrendingUp,
+  Shield,
+  Globe,
+} from "lucide-react";
+import { getTestimonials } from "../service";
+import { Testimonial as TestimonialType } from "../service/type";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
 
 export const AboutPage: React.FC = () => {
   const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
@@ -38,6 +62,37 @@ export const AboutPage: React.FC = () => {
     loadTestimonials();
   }, []);
 
+<<<<<<< HEAD
+=======
+  const stats = [
+    { label: "Happy Customers", value: "50K+", icon: Users },
+    { label: "Products Sold", value: "1M+", icon: Store },
+    { label: "Countries Served", value: "25+", icon: Globe },
+    { label: "Customer Rating", value: "4.9/5", icon: Star },
+  ];
+
+  const team = [
+    {
+      name: "Alex Thompson",
+      role: "CEO & Founder",
+      bio: "Passionate about creating exceptional shopping experiences since 2020.",
+      avatar: "AT",
+    },
+    {
+      name: "Maria Rodriguez",
+      role: "Head of Customer Experience",
+      bio: "Dedicated to ensuring every customer has a delightful shopping journey.",
+      avatar: "MR",
+    },
+    {
+      name: "David Kim",
+      role: "Chief Technology Officer",
+      bio: "Leading innovation in e-commerce technology and user experience.",
+      avatar: "DK",
+    },
+  ];
+
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-16">
@@ -49,7 +104,11 @@ export const AboutPage: React.FC = () => {
               Growing Since 2020
             </Badge>
             <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+<<<<<<< HEAD
               About Trendify
+=======
+              About ShopHub
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Your trusted destination for quality products and exceptional
@@ -84,7 +143,11 @@ export const AboutPage: React.FC = () => {
               <h2 className="text-3xl font-bold">Our Story</h2>
               <div className="prose prose-lg">
                 <p>
+<<<<<<< HEAD
                   Founded in 2020 during unprecedented times, Trendify emerged
+=======
+                  Founded in 2020 during unprecedented times, ShopHub emerged
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
                   from a simple vision: to make quality products accessible to
                   everyone, everywhere. What started as a small online store has
                   grown into a comprehensive e-commerce platform serving
@@ -119,7 +182,11 @@ export const AboutPage: React.FC = () => {
           {/* Values Section */}
           <div className="mb-20">
             <h2 className="text-3xl font-bold text-center mb-12">
+<<<<<<< HEAD
               Why Choose Trendify?
+=======
+              Why Choose ShopHub?
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card className="text-center hover:shadow-lg transition-shadow">
@@ -280,22 +347,34 @@ export const AboutPage: React.FC = () => {
               Ready to Start Shopping?
             </h2>
             <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
+<<<<<<< HEAD
               Join thousands of satisfied customers and discover why Trendify is
+=======
+              Join thousands of satisfied customers and discover why ShopHub is
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
               the preferred choice for online shopping. Quality products,
               exceptional service, and unbeatable value await you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+<<<<<<< HEAD
               <Button
                 size="lg"
                 variant="secondary"
                 className="px-8 border-white text-black hover:bg-white hover:text-blue-600"
               >
+=======
+              <Button size="lg" variant="secondary" className="px-8">
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
                 Start Shopping
               </Button>
               <Button
                 size="lg"
                 variant="outline"
+<<<<<<< HEAD
                 className="px-8 border-white text-black hover:bg-white hover:text-blue-600"
+=======
+                className="px-8 border-white text-white hover:bg-white hover:text-blue-600"
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
               >
                 Learn More
               </Button>

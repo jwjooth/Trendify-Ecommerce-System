@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 /// <reference types="vitest" />
+=======
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
 import { defineConfig } from "vite";
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
@@ -23,6 +26,10 @@ export default defineConfig({
 
   server: {
     middlewareMode: false,
+<<<<<<< HEAD
+=======
+    historyApiFallback: true,
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
   },
 
   build: {
@@ -42,6 +49,7 @@ export default defineConfig({
       },
     },
   },
+<<<<<<< HEAD
 
   // Vitest configuration
   test: {
@@ -50,4 +58,6 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     css: true,
   },
+=======
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
 });
