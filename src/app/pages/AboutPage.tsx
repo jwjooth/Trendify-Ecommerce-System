@@ -1,23 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {
-  Store,
-  Users,
-  Award,
-  Heart,
-  Star,
-  TrendingUp,
-  Shield,
-  Globe,
-} from "lucide-react";
+import { Store, Users, Award, Star, TrendingUp, Shield } from "lucide-react";
 import { getTestimonials } from "../service";
 import { Testimonial as TestimonialType } from "../service/type";
-import {
-  Card,
-  CardContent,
-} from "../components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { stats, team } from "../lib/constant";
 
 export const AboutPage: React.FC = () => {
   const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
@@ -48,34 +37,6 @@ export const AboutPage: React.FC = () => {
 
     loadTestimonials();
   }, []);
-
-  const stats = [
-    { label: "Happy Customers", value: "50K+", icon: Users },
-    { label: "Products Sold", value: "1M+", icon: Store },
-    { label: "Countries Served", value: "25+", icon: Globe },
-    { label: "Customer Rating", value: "4.9/5", icon: Star },
-  ];
-
-  const team = [
-    {
-      name: "Alex Thompson",
-      role: "CEO & Founder",
-      bio: "Passionate about creating exceptional shopping experiences since 2020.",
-      avatar: "AT",
-    },
-    {
-      name: "Maria Rodriguez",
-      role: "Head of Customer Experience",
-      bio: "Dedicated to ensuring every customer has a delightful shopping journey.",
-      avatar: "MR",
-    },
-    {
-      name: "David Kim",
-      role: "Chief Technology Officer",
-      bio: "Leading innovation in e-commerce technology and user experience.",
-      avatar: "DK",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -324,13 +285,17 @@ export const AboutPage: React.FC = () => {
               exceptional service, and unbeatable value await you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="px-8">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="px-8 border-white text-black hover:bg-white hover:text-blue-600"
+              >
                 Start Shopping
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="px-8 border-white text-white hover:bg-white hover:text-blue-600"
+                className="px-8 border-white text-black hover:bg-white hover:text-blue-600"
               >
                 Learn More
               </Button>

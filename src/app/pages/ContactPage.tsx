@@ -1,380 +1,46 @@
-import React, { useState, useEffect } from "react";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Send,
-  MessageCircle,
-  Clock,
-  HelpCircle,
-  ChevronDown,
-} from "lucide-react";
-import { getFaqs } from "../service";
-import { FAQ } from "../service/type";
-import { Button } from "../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { Textarea } from "../components/ui/textarea";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../components/ui/collapsible";
+import React from "react";
+import { MessageCircle } from "lucide-react";
 import { Badge } from "../components/ui/badge";
-import { toast } from "sonner";
+import { ContactForm } from "../components/ContactForm";
+import { ContactInfo } from "../components/ContactInfo";
+import { FAQSection } from "../components/FAQSection";
+import { BusinessHours } from "../components/BusinessHours";
 
 export const ContactPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-
-  const [openFAQ, setOpenFAQ] = useState<string | null>(null);
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [faqsLoading, setFaqsLoading] = useState(false);
-  const [faqsError, setFaqsError] = useState<string | null>(null);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Message sent! We'll get back to you within 24 hours.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
-  };
-
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  useEffect(() => {
-    const loadFaqs = async () => {
-      setFaqsLoading(true);
-      setFaqsError(null);
-
-      try {
-        const data = await getFaqs();
-        if (data?.length) {
-          setFaqs(data);
-        } else {
-          setFaqsError("No FAQs available at the moment.");
-        }
-      } catch (err) {
-        setFaqsError(
-          err instanceof Error ? err.message : "Failed to load FAQs",
-        );
-      } finally {
-        setFaqsLoading(false);
-      }
-    };
-
-    loadFaqs();
-  }, []);
-
-  const toggleFAQ = (id: string) => {
-    setOpenFAQ(openFAQ === id ? null : id);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
-          <div className="text-center mb-16">
+          <header className="text-center mb-12 md:mb-16">
             <Badge variant="secondary" className="mb-4 px-4 py-2">
-              <MessageCircle className="w-4 h-4 mr-2" />
+              <MessageCircle className="w-4 h-4 mr-2" aria-hidden="true" />
               Get In Touch
             </Badge>
-            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
               Contact Us
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
               Have questions? Need help? We're here for you! Our friendly
               support team is ready to assist you with anything from order
               inquiries to product recommendations.
             </p>
-          </div>
+          </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12 md:mb-16">
             {/* Contact Info */}
-            <div className="lg:col-span-1 space-y-6">
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="pt-6 text-center">
-                  <Mail className="w-12 h-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Email Support</h3>
-                  <p className="text-muted-foreground mb-3">
-                    Get help via email
-                  </p>
-                  <p className="font-medium text-primary">
-                    support@trendify.com
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Response within 24 hours
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="pt-6 text-center">
-                  <Phone className="w-12 h-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Phone Support</h3>
-                  <p className="text-muted-foreground mb-3">Call us directly</p>
-                  <p className="font-medium text-primary">1-800-SHOP-HUB</p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Mon-Fri: 9AM-6PM PST
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="pt-6 text-center">
-                  <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Visit Us</h3>
-                  <p className="text-muted-foreground mb-3">Our headquarters</p>
-                  <p className="font-medium text-primary">San Francisco, CA</p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    123 Commerce St
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Social Links */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-center">Follow Us</CardTitle>
-                </CardHeader>
-                <CardContent className="flex justify-center space-x-4">
-                  <Button variant="outline" size="sm" className="rounded-full">
-                    <span className="sr-only">Facebook</span>
-                    📘
-                  </Button>
-                  <Button variant="outline" size="sm" className="rounded-full">
-                    <span className="sr-only">Twitter</span>
-                    🐦
-                  </Button>
-                  <Button variant="outline" size="sm" className="rounded-full">
-                    <span className="sr-only">Instagram</span>
-                    📷
-                  </Button>
-                  <Button variant="outline" size="sm" className="rounded-full">
-                    <span className="sr-only">LinkedIn</span>
-                    💼
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+            <ContactInfo className="lg:col-span-1" />
 
             {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Send className="w-5 h-5 mr-2" />
-                    Send us a message
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <Label htmlFor="name">Full Name *</Label>
-                        <Input
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) => handleChange("name", e.target.value)}
-                          required
-                          placeholder="Your full name"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="email">Email Address *</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) =>
-                            handleChange("email", e.target.value)
-                          }
-                          required
-                          placeholder="your.email@example.com"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="subject">Subject *</Label>
-                      <Input
-                        id="subject"
-                        value={formData.subject}
-                        onChange={(e) =>
-                          handleChange("subject", e.target.value)
-                        }
-                        required
-                        placeholder="How can we help you?"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="message">Message *</Label>
-                      <Textarea
-                        id="message"
-                        rows={6}
-                        value={formData.message}
-                        onChange={(e) =>
-                          handleChange("message", e.target.value)
-                        }
-                        required
-                        placeholder="Please describe your question or issue in detail..."
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="w-full md:w-auto"
-                    >
-                      <Send className="w-4 h-4 mr-2" />
-                      Send Message
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
+            <ContactForm className="lg:col-span-2" />
           </div>
 
           {/* FAQ Section */}
-          <div className="mb-16">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Find quick answers to common questions. Can't find what you're
-                looking for? Contact our support team.
-              </p>
-            </div>
+          <FAQSection className="mb-12 md:mb-16" />
 
-            <div className="max-w-4xl mx-auto space-y-4">
-              {faqsLoading && (
-                <div className="text-center py-8 text-muted-foreground">
-                  Loading FAQs...
-                </div>
-              )}
-              {faqsError && (
-                <div className="text-center py-8 text-destructive">
-                  {faqsError}
-                </div>
-              )}
-              {!faqsLoading && !faqsError && faqs.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  No FAQs available at the moment.
-                </div>
-              )}
-              {!faqsLoading &&
-                !faqsError &&
-                faqs.map((faq) => (
-                  <Card
-                    key={faq.id}
-                    className="hover:shadow-md transition-shadow"
-                  >
-                    <Collapsible
-                      open={openFAQ === faq.id}
-                      onOpenChange={() => toggleFAQ(faq.id)}
-                    >
-                      <CollapsibleTrigger asChild>
-                        <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
-                          <CardTitle className="flex items-center justify-between text-left">
-                            <span className="flex items-center">
-                              <HelpCircle className="w-5 h-5 mr-3 text-primary" />
-                              {faq.question}
-                            </span>
-                            <ChevronDown
-                              className={`w-5 h-5 transition-transform ${openFAQ === faq.id ? "rotate-180" : ""}`}
-                            />
-                          </CardTitle>
-                        </CardHeader>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <CardContent className="pt-0">
-                          <p className="text-muted-foreground leading-relaxed">
-                            {faq.answer}
-                          </p>
-                        </CardContent>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </Card>
-                ))}
-            </div>
-          </div>
-
-          {/* Business Hours & Map */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="w-5 h-5 mr-2" />
-                  Business Hours
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="font-medium">Monday - Friday</span>
-                    <Badge variant="secondary">9:00 AM - 6:00 PM PST</Badge>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="font-medium">Saturday</span>
-                    <Badge variant="secondary">10:00 AM - 4:00 PM PST</Badge>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="font-medium">Sunday</span>
-                    <Badge variant="outline">Closed</Badge>
-                  </div>
-                </div>
-                <div className="mt-6 p-4 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground">
-                    <strong>24/7 Support:</strong> Our online support and order
-                    tracking are available around the clock.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Our Location</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
-                  <div className="text-center">
-                    <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">Interactive Map</p>
-                    <p className="text-sm text-muted-foreground">
-                      San Francisco, CA
-                    </p>
-                  </div>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <strong>Address:</strong> 123 Commerce Street, San
-                    Francisco, CA 94105
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> 1-800-SHOP-HUB
-                  </p>
-                  <p>
-                    <strong>Email:</strong> support@trendify.com
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Business Hours & Location */}
+          <BusinessHours />
         </div>
       </div>
     </div>
