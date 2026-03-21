@@ -12,13 +12,13 @@ import {
   Shield,
   Truck,
 } from "lucide-react";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../modules/cart/CartContext";
 import {
   formatCurrency,
   calculateTax,
   calculateShipping,
   calculateTotal,
-} from "../utils/currency";
+} from "../lib/currency";
 import { Button } from "../components/ui/button";
 import {
   Card,

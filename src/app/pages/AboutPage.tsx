@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Store,
   Users,
@@ -9,6 +9,8 @@ import {
   Shield,
   Globe,
 } from "lucide-react";
+import { getTestimonials } from "../service";
+import { Testimonial as TestimonialType } from "../service/type";
 import {
   Card,
   CardContent,
@@ -20,32 +22,34 @@ import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 export const AboutPage: React.FC = () => {
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Verified Customer",
-      content:
-        "ShopHub has transformed my shopping experience. The quality and service are unmatched!",
-      rating: 5,
-      avatar: "SJ",
-    },
-    {
-      name: "Mike Chen",
-      role: "Loyal Customer",
-      content:
-        "Fast shipping and excellent customer support. I've been shopping here for 2 years!",
-      rating: 5,
-      avatar: "MC",
-    },
-    {
-      name: "Emily Davis",
-      role: "Fashion Enthusiast",
-      content:
-        "The product selection is amazing and the prices are competitive. Highly recommend!",
-      rating: 5,
-      avatar: "ED",
-    },
-  ];
+  const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
+  const [testimonialsLoading, setTestimonialsLoading] = useState(false);
+  const [testimonialsError, setTestimonialsError] = useState<string | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const loadTestimonials = async () => {
+      setTestimonialsLoading(true);
+      setTestimonialsError(null);
+      try {
+        const data = await getTestimonials();
+        if (data?.length) {
+          setTestimonials(data);
+        } else {
+          setTestimonialsError("No testimonials available at the moment.");
+        }
+      } catch (err) {
+        setTestimonialsError(
+          err instanceof Error ? err.message : "Failed to load testimonials",
+        );
+      } finally {
+        setTestimonialsLoading(false);
+      }
+    };
+
+    loadTestimonials();
+  }, []);
 
   const stats = [
     { label: "Happy Customers", value: "50K+", icon: Users },
@@ -247,36 +251,68 @@ export const AboutPage: React.FC = () => {
             <h2 className="text-3xl font-bold text-center mb-12">
               What Our Customers Say
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center mb-4">
-                      <Avatar className="mr-3">
-                        <AvatarFallback>{testimonial.avatar}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h4 className="font-semibold">{testimonial.name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {testimonial.role}
+
+            {testimonialsLoading && (
+              <div className="text-center py-8 text-muted-foreground">
+                Loading testimonials...
+              </div>
+            )}
+
+            {testimonialsError && (
+              <div className="text-center py-8 text-destructive">
+                {testimonialsError}
+              </div>
+            )}
+
+            {!testimonialsLoading &&
+              !testimonialsError &&
+              testimonials.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No testimonials available right now.
+                </div>
+              )}
+
+            {!testimonialsLoading &&
+              !testimonialsError &&
+              testimonials.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {testimonials.map((testimonial) => (
+                    <Card
+                      key={testimonial.id}
+                      className="hover:shadow-lg transition-shadow"
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-center mb-4">
+                          <Avatar className="mr-3">
+                            <AvatarFallback>
+                              {testimonial.avatar || testimonial.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h4 className="font-semibold">
+                              {testimonial.name}
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              {testimonial.role}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex mb-3">
+                          {[...Array(testimonial.rating || 0)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                            />
+                          ))}
+                        </div>
+                        <p className="text-muted-foreground italic">
+                          "{testimonial.content}"
                         </p>
-                      </div>
-                    </div>
-                    <div className="flex mb-3">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground italic">
-                      "{testimonial.content}"
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
           </div>
 
           {/* CTA Section */}

@@ -33,6 +33,27 @@ export interface Cart {
   subtotal: number;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  slug?: string;
+}
+
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  content: string;
+  rating: number;
+  avatar?: string;
+}
+
 export interface Order {
   id: string;
   items: CartItem[];
@@ -68,7 +89,9 @@ export type PaymentMethod =
   | "credit_card"
   | "debit_card"
   | "paypal"
-  | "apple_pay";
+  | "apple_pay"
+  | "google_pay"
+  | "bank_transfer";
 
 export interface ProductFilters {
   category?: ProductCategory;

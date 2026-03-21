@@ -1,5 +1,5 @@
 import { RouterProvider } from "react-router";
-import { CartProvider } from "./context/CartContext";
+import { CartProvider } from "./modules/cart/CartContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { router } from "./routes";
 

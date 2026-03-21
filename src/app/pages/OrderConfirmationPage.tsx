@@ -1,9 +1,14 @@
-import React from 'react';
-import { useParams, useLocation, Link } from 'react-router';
-import { CheckCircle, Package, Truck } from 'lucide-react';
-import { formatCurrency } from '../utils/currency';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import React from "react";
+import { useParams, useLocation, Link } from "react-router";
+import { CheckCircle, Package, Truck } from "lucide-react";
+import { formatCurrency } from "../lib/currency";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 
 export const OrderConfirmationPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +22,8 @@ export const OrderConfirmationPage: React.FC = () => {
           <CheckCircle className="w-20 h-20 text-green-600 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-2">Order Confirmed!</h1>
           <p className="text-muted-foreground">
-            Thank you for your purchase. Your order has been received and is being processed.
+            Thank you for your purchase. Your order has been received and is
+            being processed.
           </p>
         </div>
 
@@ -34,7 +40,7 @@ export const OrderConfirmationPage: React.FC = () => {
             <div className="flex justify-between">
               <span className="text-muted-foreground">Order Total</span>
               <span className="font-bold text-lg">
-                {total ? formatCurrency(total) : 'N/A'}
+                {total ? formatCurrency(total) : "N/A"}
               </span>
             </div>
 
@@ -44,9 +50,12 @@ export const OrderConfirmationPage: React.FC = () => {
                 <div className="text-sm space-y-1">
                   <p className="font-medium">{shippingAddress.fullName}</p>
                   <p>{shippingAddress.addressLine1}</p>
-                  {shippingAddress.addressLine2 && <p>{shippingAddress.addressLine2}</p>}
+                  {shippingAddress.addressLine2 && (
+                    <p>{shippingAddress.addressLine2}</p>
+                  )}
                   <p>
-                    {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postalCode}
+                    {shippingAddress.city}, {shippingAddress.state}{" "}
+                    {shippingAddress.postalCode}
                   </p>
                   <p>{shippingAddress.country}</p>
                   <p>{shippingAddress.phone}</p>
