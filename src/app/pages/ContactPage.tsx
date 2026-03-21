@@ -1,11 +1,12 @@
 import React from "react";
-import { MessageCircle } from "lucide-react";
+import { Clock, MapPin, MessageCircle } from "lucide-react";
 import { Badge } from "../components/ui/badge";
 import { SEO } from "../components/SEO";
 import { ContactForm } from "../components/ContactForm";
 import { ContactInfo } from "../components/ContactInfo";
 import { FAQSection } from "../components/FAQSection";
 import { BusinessHours } from "../components/BusinessHours";
+import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 
 export const ContactPage: React.FC = () => {
   return (
