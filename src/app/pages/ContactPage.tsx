@@ -111,7 +111,7 @@ export const ContactPage: React.FC = () => {
                     Get help via email
                   </p>
                   <p className="font-medium text-primary">
-                    support@shophub.com
+                    support@trendify.com
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
                     Response within 24 hours
@@ -369,7 +369,7 @@ export const ContactPage: React.FC = () => {
                     <strong>Phone:</strong> 1-800-SHOP-HUB
                   </p>
                   <p>
-                    <strong>Email:</strong> support@shophub.com
+                    <strong>Email:</strong> support@trendify.com
                   </p>
                 </div>
               </CardContent>
