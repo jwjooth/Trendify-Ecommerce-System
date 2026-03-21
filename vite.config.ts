@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
@@ -22,7 +23,6 @@ export default defineConfig({
 
   server: {
     middlewareMode: false,
-    historyApiFallback: true,
   },
 
   build: {
@@ -41,5 +41,13 @@ export default defineConfig({
         },
       },
     },
+  },
+
+  // Vitest configuration
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
+    css: true,
   },
 });
