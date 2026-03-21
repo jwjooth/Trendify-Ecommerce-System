@@ -7,11 +7,10 @@ import {
   Testimonial,
 } from "./type";
 
-const API_BASE_URL = "https://6872883376a5723aacd50d06.mockapi.io/product";
-const CATEGORIES_URL = "https://6872883376a5723aacd50d06.mockapi.io/categories";
-const FAQS_URL = "https://69bd41b72bc2a25b22ae1242.mockapi.io/faqs";
-const TESTIMONIAL_URL =
-  "https://69bd41b72bc2a25b22ae1242.mockapi.io/testimonials";
+const API_BASE_URL = import.meta.env.VITE_PRODUCTS_URL || "https://6872883376a5723aacd50d06.mockapi.io/product";
+const CATEGORIES_URL = import.meta.env.VITE_CATEGORIES_URL || "https://6872883376a5723aacd50d06.mockapi.io/categories";
+const FAQS_URL = import.meta.env.VITE_FAQS_URL || "https://69bd41b72bc2a25b22ae1242.mockapi.io/faqs";
+const TESTIMONIAL_URL = import.meta.env.VITE_TESTIMONIALS_URL || "https://69bd41b72bc2a25b22ae1242.mockapi.io/testimonials";
 
 interface CacheEntry {
   data: any;
