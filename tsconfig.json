@@ -5,7 +5,10 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
     "skipLibCheck": true,
+<<<<<<< HEAD
+=======
     "esModuleInterop": false,
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,7 +18,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+<<<<<<< HEAD
+    "types": ["vite/client", "node"]
+=======
     "types": ["vite/client"]
+>>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
   },
   "include": ["src"]
 }

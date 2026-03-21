@@ -17,7 +17,7 @@ export const Header: React.FC = () => {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <Store className="w-6 h-6" />
-            <span className="text-xl font-bold">ShopHub</span>
+            <span className="text-xl font-bold">Trendify</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">

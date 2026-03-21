@@ -119,7 +119,7 @@ export const CartPage: React.FC = () => {
               get started.
             </p>
             <div className="space-y-3">
-              <Link to="/products">
+              <Link to="/">
                 <Button size="lg" className="w-full">
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Start Shopping
