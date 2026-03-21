@@ -9,13 +9,13 @@ import {
   Truck,
   CheckCircle,
 } from "lucide-react";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../modules/cart/CartContext";
 import {
   formatCurrency,
   calculateTax,
   calculateShipping,
   calculateTotal,
-} from "../utils/currency";
+} from "../lib/currency";
 import { Address, PaymentMethod } from "../service/type";
 import { Button } from "../components/ui/button";
 import {
@@ -600,7 +600,9 @@ export const CheckoutPage: React.FC = () => {
                     <Checkbox
                       id="emailUpdates"
                       checked={emailUpdates}
-                      onCheckedChange={setEmailUpdates}
+                      onCheckedChange={(checked) =>
+                        setEmailUpdates(checked === true)
+                      }
                     />
                     <Label htmlFor="emailUpdates" className="text-sm">
                       Send me updates about my order and exclusive offers via

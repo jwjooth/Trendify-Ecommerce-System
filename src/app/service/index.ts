@@ -1,20 +1,28 @@
-import { Product, ProductFilters, SortOption } from "./type";
+import {
+  Product,
+  ProductFilters,
+  SortOption,
+  Category,
+  FAQ,
+  Testimonial,
+} from "./type";
 
 const API_BASE_URL = "https://6872883376a5723aacd50d06.mockapi.io/product";
 const CATEGORIES_URL = "https://6872883376a5723aacd50d06.mockapi.io/categories";
+const FAQS_URL = "https://69bd41b72bc2a25b22ae1242.mockapi.io/faqs";
+const TESTIMONIAL_URL =
+  "https://69bd41b72bc2a25b22ae1242.mockapi.io/testimonials";
 
-// Simple in-memory cache
 interface CacheEntry {
   data: any;
   timestamp: number;
-  ttl: number; // Time to live in milliseconds
+  ttl: number;
 }
 
 const cache = new Map<string, CacheEntry>();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-const MAX_CACHE_SIZE = 50; // Maximum number of cached entries
+const CACHE_TTL = 5 * 60 * 1000;
+const MAX_CACHE_SIZE = 50;
 
-// Utility function to build query parameters
 const buildQueryParams = (
   filters?: ProductFilters,
   sortBy?: SortOption,
@@ -61,16 +69,13 @@ const buildQueryParams = (
   return params.toString();
 };
 
-// Sleep utility for retry delays
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Generic fetch function with error handling, caching, and retry logic
 const apiRequest = async <T>(
   url: string,
   useCache: boolean = true,
   maxRetries: number = 3,
 ): Promise<T> => {
-  // Check cache first
   if (useCache && cache.has(url)) {
     const entry = cache.get(url)!;
     if (Date.now() - entry.timestamp < entry.ttl) {
@@ -87,7 +92,6 @@ const apiRequest = async <T>(
       const response = await fetch(url);
 
       if (response.status === 429) {
-        // Rate limited - wait with exponential backoff
         const delay = Math.min(1000 * Math.pow(2, attempt), 10000); // Max 10 seconds
         console.warn(
           `Rate limited (429). Retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries + 1})`,
@@ -103,12 +107,8 @@ const apiRequest = async <T>(
       }
 
       const data = await response.json();
-
-      // Cache the successful response
       if (useCache) {
-        // Enforce cache size limit
         if (cache.size >= MAX_CACHE_SIZE) {
-          // Remove oldest entry (simple LRU approximation)
           const firstKey = cache.keys().next().value;
           if (firstKey) cache.delete(firstKey);
         }
@@ -128,7 +128,6 @@ const apiRequest = async <T>(
         break;
       }
 
-      // For other errors, retry with shorter delay
       const delay = 500 * Math.pow(2, attempt);
       console.warn(
         `API request failed. Retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries + 1})`,
@@ -141,7 +140,6 @@ const apiRequest = async <T>(
   throw lastError;
 };
 
-// Get all products with optional filters and sorting
 export const getAllProducts = async (
   filters?: ProductFilters,
   sortBy?: SortOption,
@@ -151,16 +149,20 @@ export const getAllProducts = async (
   const queryParams = buildQueryParams(filters, sortBy, limit, page);
   const url = `${API_BASE_URL}${queryParams ? `?${queryParams}` : ""}`;
 
-  return apiRequest<Product[]>(url, true); // Enable caching
+  return apiRequest<Product[]>(url, true);
 };
 
-// Get a single product by ID
 export const getProductById = async (id: string): Promise<Product> => {
-  const url = `${API_BASE_URL}/${id}`;
-  return apiRequest<Product>(url, true); // Enable caching
+  const url = `${API_BASE_URL}?id=${id}`;
+
+  const response = await apiRequest<Product[]>(url, true);
+  if (!response || response.length === 0) {
+    throw new Error(`Product with id ${id} not found`);
+  }
+
+  return response[0];
 };
 
-// Search products (alternative to getAllProducts with searchQuery)
 export const searchProducts = async (
   query: string,
   filters?: Omit<ProductFilters, "searchQuery">,
@@ -172,7 +174,6 @@ export const searchProducts = async (
   return getAllProducts(searchFilters, sortBy, limit, page);
 };
 
-// Get products by category
 export const getProductsByCategory = async (
   category: string,
   sortBy?: SortOption,
@@ -183,21 +184,18 @@ export const getProductsByCategory = async (
   return getAllProducts(filters, sortBy, limit, page);
 };
 
-// Get featured/popular products (high rating)
 export const getFeaturedProducts = async (
   limit: number = 10,
 ): Promise<Product[]> => {
   return getAllProducts({ minRating: 4.0 }, "rating", limit);
 };
 
-// Get new products
 export const getNewProducts = async (
   limit: number = 10,
 ): Promise<Product[]> => {
   return getAllProducts(undefined, "newest", limit);
 };
 
-// Get products within price range
 export const getProductsByPriceRange = async (
   minPrice: number,
   maxPrice: number,
@@ -209,7 +207,18 @@ export const getProductsByPriceRange = async (
   return getAllProducts(filters, sortBy, limit, page);
 };
 
-// Create a new product (if API supports POST)
+export const getCategories = async (): Promise<Category[]> => {
+  return apiRequest<Category[]>(CATEGORIES_URL, true);
+};
+
+export const getFaqs = async (): Promise<FAQ[]> => {
+  return apiRequest<FAQ[]>(FAQS_URL, true);
+};
+
+export const getTestimonials = async (): Promise<Testimonial[]> => {
+  return apiRequest<Testimonial[]>(TESTIMONIAL_URL, true);
+};
+
 export const createProduct = async (
   product: Omit<Product, "id" | "createdAt" | "updatedAt">,
 ): Promise<Product> => {
@@ -227,10 +236,7 @@ export const createProduct = async (
         `Failed to create product: ${response.status} ${response.statusText}`,
       );
     }
-
-    // Clear cache after mutation
     cache.clear();
-
     return await response.json();
   } catch (error) {
     console.error("Create product error:", error);
@@ -238,13 +244,12 @@ export const createProduct = async (
   }
 };
 
-// Update a product (if API supports PUT/PATCH)
 export const updateProduct = async (
   id: string,
   updates: Partial<Product>,
 ): Promise<Product> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
+    const response = await fetch(`${API_BASE_URL}?id=${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -257,10 +262,7 @@ export const updateProduct = async (
         `Failed to update product: ${response.status} ${response.statusText}`,
       );
     }
-
-    // Clear cache after mutation
     cache.clear();
-
     return await response.json();
   } catch (error) {
     console.error("Update product error:", error);
@@ -268,20 +270,16 @@ export const updateProduct = async (
   }
 };
 
-// Delete a product (if API supports DELETE)
 export const deleteProduct = async (id: string): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
+    const response = await fetch(`${API_BASE_URL}?id=${id}`, {
       method: "DELETE",
     });
-
     if (!response.ok) {
       throw new Error(
         `Failed to delete product: ${response.status} ${response.statusText}`,
       );
     }
-
-    // Clear cache after mutation
     cache.clear();
   } catch (error) {
     console.error("Delete product error:", error);

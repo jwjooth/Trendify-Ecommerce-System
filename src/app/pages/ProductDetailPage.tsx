@@ -8,9 +8,9 @@ import {
   Shield,
   RefreshCw,
 } from "lucide-react";
-import { useProduct } from "../hooks/useProducts";
-import { useCart } from "../context/CartContext";
-import { formatCurrency } from "../utils/currency";
+import { useProduct } from "../modules/product/useProducts";
+import { useCart } from "../modules/cart/CartContext";
+import { formatCurrency } from "../lib/currency";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Separator } from "../components/ui/separator";

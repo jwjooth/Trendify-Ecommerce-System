@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { ProductCard } from "../components/ProductCard";
-import { useProducts } from "../hooks/useProducts";
-import { ProductCategory, ProductFilters, SortOption } from "../service/type";
+import { useProducts } from "../modules/product/useProducts";
+import { getCategories } from "../service";
+import {
+  Product,
+  ProductCategory,
+  ProductFilters,
+  SortOption,
+  Category,
+} from "../service/type";
 import { Input } from "../components/ui/input";
 import {
   Select,
@@ -15,7 +22,7 @@ import {
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 
-const CATEGORIES: { value: ProductCategory; label: string }[] = [
+const DEFAULT_CATEGORIES: { value: ProductCategory; label: string }[] = [
   { value: "electronics", label: "Electronics" },
   { value: "clothing", label: "Clothing" },
   { value: "books", label: "Books" },
@@ -33,6 +40,10 @@ export const ProductsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<
     ProductCategory | undefined
   >((searchParams.get("category") as ProductCategory) || undefined);
+  const [categories, setCategories] =
+    useState<{ value: ProductCategory; label: string }[]>(DEFAULT_CATEGORIES);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
 
   const filters: ProductFilters = {
@@ -41,6 +52,37 @@ export const ProductsPage: React.FC = () => {
   };
 
   const { products, loading, error, totalCount } = useProducts(filters, sortBy);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      setCategoriesLoading(true);
+      setCategoriesError(null);
+
+      try {
+        const data = await getCategories();
+        if (data?.length) {
+          const sanitized = data
+            .filter((item): item is Category => !!item?.name)
+            .map((item) => ({
+              value: item.name as ProductCategory,
+              label: item.name,
+            }));
+
+          if (sanitized.length > 0) {
+            setCategories(sanitized);
+          }
+        }
+      } catch (err) {
+        setCategoriesError(
+          err instanceof Error ? err.message : "Failed to load categories",
+        );
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
@@ -75,18 +117,14 @@ export const ProductsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Discover Products</h1>
         <p className="text-muted-foreground">
           Browse our curated collection of premium products
         </p>
       </div>
-
-      {/* Filters and Search */}
       <div className="mb-8 space-y-4">
         <div className="flex flex-col md:flex-row gap-4">
-          {/* Search */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -96,8 +134,6 @@ export const ProductsPage: React.FC = () => {
               className="pl-10"
             />
           </div>
-
-          {/* Category Filter */}
           <Select
             value={selectedCategory || "all"}
             onValueChange={(value) =>
@@ -109,7 +145,17 @@ export const ProductsPage: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              {CATEGORIES.map((cat) => (
+              {categoriesLoading && (
+                <SelectItem value="all" disabled>
+                  Loading categories...
+                </SelectItem>
+              )}
+              {categoriesError && (
+                <SelectItem value="all" disabled>
+                  Error loading categories
+                </SelectItem>
+              )}
+              {categories.map((cat) => (
                 <SelectItem key={cat.value} value={cat.value}>
                   {cat.label}
                 </SelectItem>
@@ -133,8 +179,6 @@ export const ProductsPage: React.FC = () => {
             </SelectContent>
           </Select>
         </div>
-
-        {/* Active Filters */}
         {hasActiveFilters && (
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm text-muted-foreground">
@@ -154,8 +198,6 @@ export const ProductsPage: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Results Count */}
       <div className="mb-6">
         {loading ? (
           <p className="text-sm text-muted-foreground">Loading products...</p>
@@ -188,7 +230,7 @@ export const ProductsPage: React.FC = () => {
         </div>
       ) : products.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {products.map((product: Product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

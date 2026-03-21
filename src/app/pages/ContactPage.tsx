@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Mail,
   Phone,
@@ -9,6 +9,8 @@ import {
   HelpCircle,
   ChevronDown,
 } from "lucide-react";
+import { getFaqs } from "../service";
+import { FAQ } from "../service/type";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -36,45 +38,9 @@ export const ContactPage: React.FC = () => {
   });
 
   const [openFAQ, setOpenFAQ] = useState<string | null>(null);
-
-  const faqs = [
-    {
-      id: "shipping",
-      question: "How long does shipping take?",
-      answer:
-        "Standard shipping takes 3-5 business days. Express shipping is available for 1-2 business days at an additional cost. International shipping may take 7-14 business days depending on the destination.",
-    },
-    {
-      id: "returns",
-      question: "What is your return policy?",
-      answer:
-        "We offer a 30-day return policy for most items. Products must be in their original condition with tags attached. Some items like electronics and personal care products may have different return policies.",
-    },
-    {
-      id: "tracking",
-      question: "How can I track my order?",
-      answer:
-        "Once your order ships, you'll receive a tracking number via email. You can also check your order status by logging into your account and viewing your order history.",
-    },
-    {
-      id: "payment",
-      question: "What payment methods do you accept?",
-      answer:
-        "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, Google Pay, and bank transfers. All payments are processed securely.",
-    },
-    {
-      id: "support",
-      question: "How can I contact customer support?",
-      answer:
-        "You can reach our customer support team via email at support@shophub.com, phone at 1-800-SHOP-HUB, or through our live chat feature available 24/7 on our website.",
-    },
-    {
-      id: "warranty",
-      question: "Do your products come with warranty?",
-      answer:
-        "Most of our products come with manufacturer warranties. Electronics typically have 1-2 year warranties, while other products may have different warranty periods. Check the product page for specific warranty information.",
-    },
-  ];
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [faqsLoading, setFaqsLoading] = useState(false);
+  const [faqsError, setFaqsError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +51,30 @@ export const ContactPage: React.FC = () => {
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  useEffect(() => {
+    const loadFaqs = async () => {
+      setFaqsLoading(true);
+      setFaqsError(null);
+
+      try {
+        const data = await getFaqs();
+        if (data?.length) {
+          setFaqs(data);
+        } else {
+          setFaqsError("No FAQs available at the moment.");
+        }
+      } catch (err) {
+        setFaqsError(
+          err instanceof Error ? err.message : "Failed to load FAQs",
+        );
+      } finally {
+        setFaqsLoading(false);
+      }
+    };
+
+    loadFaqs();
+  }, []);
 
   const toggleFAQ = (id: string) => {
     setOpenFAQ(openFAQ === id ? null : id);
@@ -271,38 +261,55 @@ export const ContactPage: React.FC = () => {
             </div>
 
             <div className="max-w-4xl mx-auto space-y-4">
-              {faqs.map((faq) => (
-                <Card
-                  key={faq.id}
-                  className="hover:shadow-md transition-shadow"
-                >
-                  <Collapsible
-                    open={openFAQ === faq.id}
-                    onOpenChange={() => toggleFAQ(faq.id)}
+              {faqsLoading && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Loading FAQs...
+                </div>
+              )}
+              {faqsError && (
+                <div className="text-center py-8 text-destructive">
+                  {faqsError}
+                </div>
+              )}
+              {!faqsLoading && !faqsError && faqs.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No FAQs available at the moment.
+                </div>
+              )}
+              {!faqsLoading &&
+                !faqsError &&
+                faqs.map((faq) => (
+                  <Card
+                    key={faq.id}
+                    className="hover:shadow-md transition-shadow"
                   >
-                    <CollapsibleTrigger asChild>
-                      <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
-                        <CardTitle className="flex items-center justify-between text-left">
-                          <span className="flex items-center">
-                            <HelpCircle className="w-5 h-5 mr-3 text-primary" />
-                            {faq.question}
-                          </span>
-                          <ChevronDown
-                            className={`w-5 h-5 transition-transform ${openFAQ === faq.id ? "rotate-180" : ""}`}
-                          />
-                        </CardTitle>
-                      </CardHeader>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <CardContent className="pt-0">
-                        <p className="text-muted-foreground leading-relaxed">
-                          {faq.answer}
-                        </p>
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </Card>
-              ))}
+                    <Collapsible
+                      open={openFAQ === faq.id}
+                      onOpenChange={() => toggleFAQ(faq.id)}
+                    >
+                      <CollapsibleTrigger asChild>
+                        <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
+                          <CardTitle className="flex items-center justify-between text-left">
+                            <span className="flex items-center">
+                              <HelpCircle className="w-5 h-5 mr-3 text-primary" />
+                              {faq.question}
+                            </span>
+                            <ChevronDown
+                              className={`w-5 h-5 transition-transform ${openFAQ === faq.id ? "rotate-180" : ""}`}
+                            />
+                          </CardTitle>
+                        </CardHeader>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <CardContent className="pt-0">
+                          <p className="text-muted-foreground leading-relaxed">
+                            {faq.answer}
+                          </p>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                ))}
             </div>
           </div>
 
