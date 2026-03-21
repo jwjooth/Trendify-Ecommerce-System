@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 import { Users, Store, Globe, Star } from "lucide-react";
 import { Mail, Phone, MapPin } from "lucide-react";
 
-=======
->>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
 export const PRODUCT_CATEGORIES = [
   "electronics",
   "clothing",
@@ -72,7 +69,6 @@ export const VALIDATION = {
   POSTAL_CODE_REGEX: /^[\dA-Za-z\s\-]+$/,
   PASSWORD_MIN_LENGTH: 8,
 } as const;
-<<<<<<< HEAD
 
 export const stats = [
   { label: "Happy Customers", value: "50K+", icon: Users },
@@ -158,5 +154,3 @@ export const hours = [
   },
   { day: "Sunday", time: "Closed", variant: "outline" as const },
 ];
-=======
->>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574
