@@ -1,11 +1,10 @@
-<<<<<<< HEAD
 # Trendify - Modern E-Commerce System
 
 ![Trendify Banner](https://via.placeholder.com/800x200/4F46E5/FFFFFF?text=Trendify+E-Commerce) <!-- Replace with actual banner -->
 
 A stunning, animated e-commerce platform that brings fashion to life. Built with cutting-edge technologies for a seamless shopping experience, featuring smooth animations, beautiful UI components, and modern design principles.
 
-**Designed with ❤️ by [Jordan Theovandy](https://github.com/jordantheovandy)**
+**Designed with ❤️ by [Jordan Theovandy](https://github.com/jwjooth)**
 
 ## ✨ Features
 
@@ -111,14 +110,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Experience the future of online shopping with Trendify!** 🛍️✨
-=======
-# E-commerce Website Template
-
-This is a code bundle for E-commerce Website Template. The original project is available at https://www.figma.com/design/EOCxpKhOrYfS0gfFZFBVFJ/E-commerce-Website-Template.
-
-## Running the code
-
-Run `npm i` to install the dependencies.
-
-Run `npm run dev` to start the development server.
->>>>>>> 07ec06bb513ba460a962961ed8fe05a03a79a574

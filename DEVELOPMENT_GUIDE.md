@@ -2,7 +2,7 @@
 
 **A Modern, Animated E-Commerce Experience** ✨
 
-Welcome to Trendify, a cutting-edge e-commerce platform designed for beauty and performance. This project combines stunning visual design with smooth animations, built by [Jordan Theovandy](https://github.com/jordantheovandy) using Figma for design and MockAPI.io for backend simulation.
+Welcome to Trendify, a cutting-edge e-commerce platform designed for beauty and performance. This project combines stunning visual design with smooth animations, built by [Jordan Theovandy](https://github.com/jwjooth) using Figma for design and MockAPI.io for backend simulation.
 
 ## 🎨 Design Philosophy
 
@@ -28,14 +28,16 @@ Trendify embraces modern web aesthetics with:
 
 ## 📋 Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Design & Animations](#design--animations)
-3. [API Integration](#api-integration)
-4. [Project Structure](#project-structure)
-5. [Issues Fixed](#issues-fixed)
-6. [Best Practices Implemented](#best-practices-implemented)
-7. [Getting Started](#getting-started)
-8. [Development Guidelines](#development-guidelines)
+1. [Design Philosophy](#design-philosophy)
+2. [Tech Stack & Architecture](#tech-stack--architecture)
+3. [Project Overview](#project-overview)
+4. [Design & Animations](#design--animations)
+5. [API Integration](#api-integration)
+6. [Project Structure](#project-structure)
+7. [Issues Fixed](#issues-fixed)
+8. [Best Practices Implemented](#best-practices-implemented)
+9. [Getting Started](#getting-started)
+10. [Development Guidelines](#development-guidelines)
 
 ---
 

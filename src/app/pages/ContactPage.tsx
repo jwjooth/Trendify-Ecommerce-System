@@ -1,11 +1,12 @@
 import React from "react";
-import { MessageCircle } from "lucide-react";
+import { Clock, MapPin, MessageCircle } from "lucide-react";
 import { Badge } from "../components/ui/badge";
 import { SEO } from "../components/SEO";
 import { ContactForm } from "../components/ContactForm";
 import { ContactInfo } from "../components/ContactInfo";
 import { FAQSection } from "../components/FAQSection";
 import { BusinessHours } from "../components/BusinessHours";
+import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 
 export const ContactPage: React.FC = () => {
   return (
@@ -24,7 +25,7 @@ export const ContactPage: React.FC = () => {
             name: "Trendify",
             contactPoint: {
               "@type": "ContactPoint",
-              telephone: "1-800-SHOP-HUB",
+              telephone: "1-800-TRENDIFY",
               email: "support@trendify.com",
               contactType: "customer service",
               availableLanguage: "English",
@@ -120,10 +121,10 @@ export const ContactPage: React.FC = () => {
                     Francisco, CA 94105
                   </p>
                   <p>
-                    <strong>Phone:</strong> 1-800-SHOP-HUB
+                    <strong>Phone:</strong> 1-800-TRENDIFY
                   </p>
                   <p>
-                    <strong>Email:</strong> support@shophub.com
+                    <strong>Email:</strong> support@trendify.com
                   </p>
                 </div>
               </CardContent>
