@@ -1,9 +1,3 @@
-/**
- * Error Tracking and Logging Utility
- * Provides centralized error tracking, logging, and reporting
- * Following industry best practices for error management
- */
-
 export interface ErrorLog {
   id: string;
   timestamp: Date;
@@ -28,9 +22,6 @@ class ErrorLogger {
   private readonly maxErrorsPerType = 100;
   private readonly isDevelopment = import.meta.env.DEV;
 
-  /**
-   * Log an error with context
-   */
   log(
     level: "DEBUG" | "INFO" | "WARN" | "ERROR" | "CRITICAL",
     message: string,
@@ -54,16 +45,13 @@ class ErrorLogger {
       stack: error?.stack,
     };
 
-    // Store error
     this.storeError(errorLog);
 
-    // Log to console in development
     if (this.isDevelopment) {
       const consoleMethod = this.getConsoleMethod(level);
       consoleMethod(`[${errorId}] ${message}`, errorLog);
     }
 
-    // Log critical errors to external service (in production)
     if (level === "CRITICAL" && !this.isDevelopment) {
       this.reportToExternalService(errorLog);
     }
@@ -71,23 +59,14 @@ class ErrorLogger {
     return errorId;
   }
 
-  /**
-   * Debug level logging
-   */
   debug(message: string, context?: Record<string, unknown>): void {
     this.log("DEBUG", message, context);
   }
 
-  /**
-   * Info level logging
-   */
   info(message: string, context?: Record<string, unknown>): void {
     this.log("INFO", message, context);
   }
 
-  /**
-   * Warning level logging
-   */
   warn(
     message: string,
     context?: Record<string, unknown>,
@@ -96,9 +75,6 @@ class ErrorLogger {
     this.log("WARN", message, context, error);
   }
 
-  /**
-   * Error level logging
-   */
   error(
     message: string,
     context?: Record<string, unknown>,
@@ -107,9 +83,6 @@ class ErrorLogger {
     return this.log("ERROR", message, context, error);
   }
 
-  /**
-   * Critical error logging
-   */
   critical(
     message: string,
     context?: Record<string, unknown>,
@@ -118,9 +91,6 @@ class ErrorLogger {
     return this.log("CRITICAL", message, context, error);
   }
 
-  /**
-   * Get all logged errors
-   */
   getErrors(): ErrorLog[] {
     const allErrors: ErrorLog[] = [];
     this.errors.forEach((errorLogs) => {
@@ -131,16 +101,10 @@ class ErrorLogger {
     );
   }
 
-  /**
-   * Get errors by type/message
-   */
   getErrorsByType(message: string): ErrorLog[] {
     return this.errors.get(message) || [];
   }
 
-  /**
-   * Get error report by type
-   */
   getErrorReport(message: string): ErrorReport | null {
     const logs = this.getErrorsByType(message);
     if (logs.length === 0) return null;
@@ -153,38 +117,25 @@ class ErrorLogger {
     };
   }
 
-  /**
-   * Clear all errors
-   */
   clearErrors(): void {
     this.errors.clear();
   }
 
-  /**
-   * Export errors as JSON
-   */
   exportErrors(): string {
     const errors = this.getErrors();
     return JSON.stringify(errors, null, 2);
   }
 
-  /**
-   * Generate unique error ID
-   */
   private generateErrorId(): string {
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substring(2, 8);
     return `ERR_${timestamp}_${random}`.toUpperCase();
   }
 
-  /**
-   * Store error with deduplication
-   */
   private storeError(errorLog: ErrorLog): void {
     const key = errorLog.message;
     const existing = this.errors.get(key) || [];
 
-    // Prevent storing too many of the same error
     if (existing.length >= this.maxErrorsPerType) {
       existing.shift();
     }
@@ -192,7 +143,6 @@ class ErrorLogger {
     existing.unshift(errorLog);
     this.errors.set(key, existing);
 
-    // Prevent memory leaks
     if (this.errors.size > this.maxErrors) {
       const firstKey = this.errors.keys().next().value;
       if (firstKey) {
@@ -201,9 +151,6 @@ class ErrorLogger {
     }
   }
 
-  /**
-   * Get appropriate console method
-   */
   private getConsoleMethod(
     level: "DEBUG" | "INFO" | "WARN" | "ERROR" | "CRITICAL",
   ): (...args: unknown[]) => void {
@@ -221,31 +168,13 @@ class ErrorLogger {
         return console.log;
     }
   }
-
-  /**
-   * Report error to external service (e.g., Sentry, LogRocket)
-   */
   private reportToExternalService(errorLog: ErrorLog): void {
-    // This would be implemented in production
-    // Example with Sentry:
-    // if (window.Sentry) {
-    //   window.Sentry.captureException(new Error(errorLog.message), {
-    //     level: errorLog.level.toLowerCase(),
-    //     contexts: { app: errorLog.context },
-    //   });
-    // }
   }
 }
 
-// Export singleton instance
 export const errorLogger = new ErrorLogger();
 
-/**
- * Global error handler
- * Catches unhandled errors and promise rejections
- */
 export function setupGlobalErrorHandlers(): void {
-  // Handle unhandled errors
   window.addEventListener("error", (event) => {
     errorLogger.error(
       "Uncaught error",
@@ -258,7 +187,6 @@ export function setupGlobalErrorHandlers(): void {
     );
   });
 
-  // Handle unhandled promise rejections
   window.addEventListener("unhandledrejection", (event) => {
     errorLogger.error(
       "Unhandled promise rejection",
@@ -267,7 +195,6 @@ export function setupGlobalErrorHandlers(): void {
     );
   });
 
-  // Handle console errors in production
   if (!import.meta.env.DEV) {
     const originalError = console.error;
     console.error = (...args: unknown[]) => {
@@ -277,22 +204,13 @@ export function setupGlobalErrorHandlers(): void {
   }
 }
 
-/**
- * Performance monitoring
- */
 export class PerformanceMonitor {
   private marks: Map<string, number> = new Map();
 
-  /**
-   * Start timing a operation
-   */
   start(name: string): void {
     this.marks.set(name, performance.now());
   }
 
-  /**
-   * End timing and log duration
-   */
   end(name: string): number {
     const start = this.marks.get(name);
     if (!start) {
@@ -303,7 +221,6 @@ export class PerformanceMonitor {
     const duration = performance.now() - start;
     this.marks.delete(name);
 
-    // Log if operation took too long
     if (duration > 1000) {
       errorLogger.warn(`Slow operation detected: ${name} took ${duration}ms`);
     }
@@ -311,9 +228,6 @@ export class PerformanceMonitor {
     return duration;
   }
 
-  /**
-   * Measure and log operation
-   */
   measure<T>(name: string, fn: () => T): T {
     this.start(name);
     try {
@@ -323,9 +237,6 @@ export class PerformanceMonitor {
     }
   }
 
-  /**
-   * Async version of measure
-   */
   async measureAsync<T>(name: string, fn: () => Promise<T>): Promise<T> {
     this.start(name);
     try {

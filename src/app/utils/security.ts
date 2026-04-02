@@ -1,15 +1,5 @@
-/**
- * Security Utilities
- * Provides industry-standard security functions for the application
- * Includes CSRF token management, CSP headers, and secure data handling
- */
-
 import { logger } from "../lib";
 
-/**
- * CSRF Token Management
- * Prevents Cross-Site Request Forgery attacks
- */
 export class CSRFTokenManager {
   private static readonly TOKEN_KEY = "x-csrf-token";
   private static readonly HEADER_NAME = "X-CSRF-Token";
@@ -20,7 +10,6 @@ export class CSRFTokenManager {
       return this.token;
     }
 
-    // Generate random token
     const randomBytes = new Uint8Array(32);
     crypto.getRandomValues(randomBytes);
     const token = Array.from(randomBytes)
@@ -52,8 +41,6 @@ export class CSRFTokenManager {
     if (!storedToken) {
       return false;
     }
-
-    // Use constant-time comparison to prevent timing attacks
     return this.constantTimeCompare(token, storedToken);
   }
 
@@ -83,23 +70,14 @@ export class CSRFTokenManager {
   }
 }
 
-/**
- * Secure Session Storage
- * Provides encrypted storage for sensitive session data
- */
 export class SecureSessionStorage {
   private static readonly PREFIX = "app_secure_";
 
-  /**
-   * Store encrypted data in session storage
-   * Note: This is for session data only. For production, use proper encryption.
-   */
   static setItem(key: string, value: unknown): void {
     const prefixedKey = this.PREFIX + key;
     try {
       const jsonValue = JSON.stringify(value);
-      // In production, encrypt this value before storing
-      sessionStorage.setItem(prefixedKey, btoa(jsonValue)); // Base64 encoding (NOT encryption)
+      sessionStorage.setItem(prefixedKey, btoa(jsonValue));
       logger.debug("Secure session data stored", { key });
     } catch (error) {
       logger.error("Failed to store secure session data", { key, error });
@@ -113,9 +91,7 @@ export class SecureSessionStorage {
       if (!encoded) {
         return null;
       }
-
-      // In production, decrypt this value after retrieval
-      const jsonValue = atob(encoded); // Base64 decoding
+      const jsonValue = atob(encoded);
       return JSON.parse(jsonValue) as T;
     } catch (error) {
       logger.error("Failed to retrieve secure session data", { key, error });
@@ -143,28 +119,16 @@ export class SecureSessionStorage {
   }
 }
 
-/**
- * XSS Protection Utilities
- */
 export const XSSProtection = {
-  /**
-   * Escape HTML special characters to prevent XSS
-   */
   escapeHtml(text: string): string {
     const element = document.createElement("div");
     element.textContent = text;
     return element.innerHTML;
   },
-
-  /**
-   * Sanitize and escape user input
-   */
   sanitizeInput(input: string): string {
     if (typeof input !== "string") {
       return "";
     }
-
-    // Remove script tags and event handlers
     let sanitized = input
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
       .replace(/on\w+\s*=/gi, "_disabled_")
@@ -173,10 +137,6 @@ export const XSSProtection = {
 
     return this.escapeHtml(sanitized);
   },
-
-  /**
-   * Check if string contains potential XSS patterns
-   */
   containsXSSPatterns(input: string): boolean {
     const xssPatterns = [
       /<script/i,
@@ -193,10 +153,6 @@ export const XSSProtection = {
   },
 };
 
-/**
- * Rate Limiting
- * Prevents brute force attacks and DDoS
- */
 export class RateLimiter {
   private attempts: Map<string, number[]> = new Map();
   private readonly maxAttempts: number;
@@ -211,7 +167,6 @@ export class RateLimiter {
     const now = Date.now();
     let attempts = this.attempts.get(identifier) || [];
 
-    // Remove old attempts outside the window
     attempts = attempts.filter((timestamp) => now - timestamp < this.windowMs);
 
     if (attempts.length >= this.maxAttempts) {
@@ -237,10 +192,6 @@ export class RateLimiter {
   }
 }
 
-/**
- * Security Headers Utility
- * Generates recommended security headers
- */
 export const SecurityHeaders = {
   generateCSPHeader(): string {
     return `
@@ -269,10 +220,6 @@ export const SecurityHeaders = {
   },
 };
 
-/**
- * Data Expiration Manager
- * Ensures sensitive data expires after a certain time
- */
 export class DataExpirationManager {
   static setWithExpiration(
     key: string,
@@ -301,7 +248,6 @@ export class DataExpirationManager {
 
       const data = JSON.parse(item);
 
-      // Check if data has expired
       if (data.expiresAt && Date.now() > data.expiresAt) {
         sessionStorage.removeItem(key);
         logger.debug("Expired data removed", { key });

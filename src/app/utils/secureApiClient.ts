@@ -1,8 +1,3 @@
-/**
- * Enhanced API Request Handler
- * Provides secure API communication with proper error handling, retries, and timeout management
- */
-
 import { logger } from "../lib";
 
 export interface SecureApiRequestConfig {
@@ -21,31 +16,23 @@ export interface ApiRequestResult<T> {
   statusCode?: number;
 }
 
-/**
- * Secure API request handler with industry best practices
- */
 export class SecureApiClient {
-  private readonly defaultTimeout = 10000; // 10 seconds
+  private readonly defaultTimeout = 10000;
   private readonly defaultRetries = 3;
-  private readonly retryDelay = 1000; // 1 second
+  private readonly retryDelay = 1000;
   private requestCount = 0;
   private readonly maxConcurrentRequests = 100;
 
-  /**
-   * Make a secure API request
-   */
   async request<T = unknown>(
     url: string,
     config: SecureApiRequestConfig = {},
   ): Promise<ApiRequestResult<T>> {
-    // Validate URL
     if (!this.isValidUrl(url)) {
       const errorMsg = "Invalid URL provided";
       logger.error(errorMsg, { url });
       return { success: false, error: errorMsg };
     }
 
-    // Check concurrent request limit
     if (this.requestCount >= this.maxConcurrentRequests) {
       const errorMsg = "Too many concurrent requests";
       logger.warn(errorMsg);
@@ -64,15 +51,12 @@ export class SecureApiClient {
         csrfToken,
       } = config;
 
-      // Validate sensitive data not being sent in GET requests
       if (method === "GET" && body) {
         logger.warn("Body data provided in GET request, will be ignored");
       }
 
-      // Build request headers with security
       const requestHeaders = this.buildSecureHeaders(headers, csrfToken);
 
-      // Create abort controller for timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -82,12 +66,11 @@ export class SecureApiClient {
           headers: requestHeaders,
           body: body ? JSON.stringify(body) : undefined,
           signal: controller.signal,
-          credentials: "same-origin", // Prevent CSRF
+          credentials: "same-origin",
         });
 
         clearTimeout(timeoutId);
 
-        // Handle non-OK responses
         if (!response.ok) {
           return await this.handleErrorResponse<T>(
             response,
@@ -97,7 +80,6 @@ export class SecureApiClient {
           );
         }
 
-        // Parse response
         const data = await this.parseResponse<T>(response);
 
         logger.debug("API request successful", {
@@ -135,16 +117,10 @@ export class SecureApiClient {
     }
   }
 
-  /**
-   * GET request
-   */
   async get<T = unknown>(url: string, headers?: Record<string, string>) {
     return this.request<T>(url, { method: "GET", headers });
   }
 
-  /**
-   * POST request with body
-   */
   async post<T = unknown>(
     url: string,
     body: unknown,
@@ -153,9 +129,6 @@ export class SecureApiClient {
     return this.request<T>(url, { method: "POST", body, headers });
   }
 
-  /**
-   * PUT request
-   */
   async put<T = unknown>(
     url: string,
     body: unknown,
@@ -164,16 +137,10 @@ export class SecureApiClient {
     return this.request<T>(url, { method: "PUT", body, headers });
   }
 
-  /**
-   * DELETE request
-   */
   async delete<T = unknown>(url: string, headers?: Record<string, string>) {
     return this.request<T>(url, { method: "DELETE", headers });
   }
 
-  /**
-   * Build secure headers
-   */
   private buildSecureHeaders(
     customHeaders: Record<string, string>,
     csrfToken?: string,
@@ -181,15 +148,13 @@ export class SecureApiClient {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       Accept: "application/json",
-      "X-Requested-With": "XMLHttpRequest", // XHR detection
+      "X-Requested-With": "XMLHttpRequest",
     };
 
-    // Add CSRF token if provided
     if (csrfToken) {
       headers["X-CSRF-Token"] = csrfToken;
     }
 
-    // Merge custom headers (cannot override security headers)
     Object.entries(customHeaders).forEach(([key, value]) => {
       if (!["Content-Type", "X-CSRF-Token", "X-Requested-With"].includes(key)) {
         headers[key] = value;
@@ -199,9 +164,6 @@ export class SecureApiClient {
     return headers;
   }
 
-  /**
-   * Handle error responses with retry logic
-   */
   private async handleErrorResponse<T>(
     response: Response,
     url: string,
@@ -213,7 +175,6 @@ export class SecureApiClient {
 
     logger.warn("API error response", { url, status, statusText });
 
-    // Don't retry client errors (4xx) unless it's 408 (timeout) or 429 (rate limit)
     const shouldRetry = status >= 500 || status === 408 || status === 429;
 
     if (shouldRetry && retriesLeft > 0) {
@@ -223,15 +184,12 @@ export class SecureApiClient {
         retriesLeft,
       });
 
-      // Exponential backoff
       const delay = this.retryDelay * (this.defaultRetries - retriesLeft + 1);
       await new Promise((resolve) => setTimeout(resolve, delay));
 
-      // Retry the request
       return this.request<T>(url, { ...config, retries: retriesLeft - 1 });
     }
 
-    // Get error message from response
     let errorMessage = `HTTP ${status}: ${statusText}`;
     try {
       const errorData = await response.json();
@@ -249,9 +207,6 @@ export class SecureApiClient {
     };
   }
 
-  /**
-   * Parse response safely
-   */
   private async parseResponse<T>(response: Response): Promise<T> {
     const contentType = response.headers.get("content-type") ?? "";
 
@@ -264,23 +219,16 @@ export class SecureApiClient {
       return text as unknown as T;
     }
 
-    // Default to text
     const text = await response.text();
     return text as unknown as T;
   }
 
-  /**
-   * Validate URL is safe
-   */
   private isValidUrl(urlString: string): boolean {
     try {
       const url = new URL(urlString, window.location.origin);
-
-      // Prevent javascript:, data:, etc.
       if (!["http:", "https:"].includes(url.protocol)) {
         return false;
       }
-
       return true;
     } catch {
       return false;
@@ -288,5 +236,4 @@ export class SecureApiClient {
   }
 }
 
-// Export singleton
 export const secureApiClient = new SecureApiClient();

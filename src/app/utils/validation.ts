@@ -1,15 +1,8 @@
-/**
- * Input Validation Utilities
- * Provides type-safe validation for user inputs and external data
- * Industry-standard validation following OWASP guidelines
- */
-
 export interface ValidationResult {
   isValid: boolean;
   errors: string[];
 }
 
-// Email validation (RFC 5322 simplified)
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const validateEmail = (email: string): ValidationResult => {
   const errors: string[] = [];
@@ -34,7 +27,6 @@ export const validateEmail = (email: string): ValidationResult => {
   };
 };
 
-// Phone validation (international format)
 const PHONE_REGEX = /^[\d\s\-\+\(\)]{10,20}$/;
 export const validatePhone = (phone: string): ValidationResult => {
   const errors: string[] = [];
@@ -59,7 +51,6 @@ export const validatePhone = (phone: string): ValidationResult => {
   };
 };
 
-// Postal code validation (US format)
 export const validatePostalCode = (
   code: string,
   country = "US",
@@ -98,7 +89,6 @@ export const validatePostalCode = (
   };
 };
 
-// Address validation
 export const validateAddress = (address: {
   fullName: string;
   addressLine1: string;
@@ -110,7 +100,6 @@ export const validateAddress = (address: {
 }): ValidationResult => {
   const errors: string[] = [];
 
-  // Validate full name
   if (!address.fullName || typeof address.fullName !== "string") {
     errors.push("Full name is required");
   } else if (address.fullName.trim().length < 2) {
@@ -119,7 +108,6 @@ export const validateAddress = (address: {
     errors.push("Full name is too long (max 100 characters)");
   }
 
-  // Validate address line 1
   if (!address.addressLine1 || typeof address.addressLine1 !== "string") {
     errors.push("Address line 1 is required");
   } else if (address.addressLine1.trim().length < 5) {
@@ -128,7 +116,6 @@ export const validateAddress = (address: {
     errors.push("Address line 1 is too long (max 100 characters)");
   }
 
-  // Validate city
   if (!address.city || typeof address.city !== "string") {
     errors.push("City is required");
   } else if (address.city.trim().length < 2) {
@@ -137,14 +124,12 @@ export const validateAddress = (address: {
     errors.push("City is too long (max 50 characters)");
   }
 
-  // Validate state
   if (!address.state || typeof address.state !== "string") {
     errors.push("State/Province is required");
   } else if (address.state.trim().length < 2) {
     errors.push("State/Province is too short");
   }
 
-  // Validate postal code
   const postalValidation = validatePostalCode(
     address.postalCode,
     address.country,
@@ -153,7 +138,6 @@ export const validateAddress = (address: {
     errors.push(...postalValidation.errors);
   }
 
-  // Validate phone
   const phoneValidation = validatePhone(address.phone);
   if (!phoneValidation.isValid) {
     errors.push(...phoneValidation.errors);
@@ -165,7 +149,6 @@ export const validateAddress = (address: {
   };
 };
 
-// Credit card validation (Luhn algorithm)
 export const validateCreditCard = (cardNumber: string): ValidationResult => {
   const errors: string[] = [];
 
@@ -176,17 +159,14 @@ export const validateCreditCard = (cardNumber: string): ValidationResult => {
 
   const cleaned = cardNumber.replace(/\s/g, "");
 
-  // Check if only digits
   if (!/^\d+$/.test(cleaned)) {
     errors.push("Card number must contain only digits");
   }
 
-  // Check length (13-19 digits)
   if (cleaned.length < 13 || cleaned.length > 19) {
     errors.push("Card number must be 13-19 digits");
   }
 
-  // Luhn algorithm
   if (!luhnCheck(cleaned)) {
     errors.push("Card number is invalid (failed Luhn check)");
   }
@@ -197,7 +177,6 @@ export const validateCreditCard = (cardNumber: string): ValidationResult => {
   };
 };
 
-// Luhn algorithm implementation
 function luhnCheck(num: string): boolean {
   let sum = 0;
   let isEven = false;
@@ -219,7 +198,6 @@ function luhnCheck(num: string): boolean {
   return sum % 10 === 0;
 }
 
-// Card expiry validation
 export const validateCardExpiry = (expiryDate: string): ValidationResult => {
   const errors: string[] = [];
 
@@ -257,7 +235,6 @@ export const validateCardExpiry = (expiryDate: string): ValidationResult => {
   };
 };
 
-// CVV validation
 export const validateCVV = (cvv: string): ValidationResult => {
   const errors: string[] = [];
 
@@ -277,7 +254,6 @@ export const validateCVV = (cvv: string): ValidationResult => {
   };
 };
 
-// Generic string validation with options
 export interface StringValidationOptions {
   minLength?: number;
   maxLength?: number;
@@ -321,7 +297,6 @@ export const validateString = (
   };
 };
 
-// Validate cart quantity
 export const validateQuantity = (quantity: unknown): ValidationResult => {
   const errors: string[] = [];
 
@@ -339,7 +314,6 @@ export const validateQuantity = (quantity: unknown): ValidationResult => {
   };
 };
 
-// Validate price
 export const validatePrice = (price: unknown): ValidationResult => {
   const errors: string[] = [];
 
@@ -357,11 +331,7 @@ export const validatePrice = (price: unknown): ValidationResult => {
   };
 };
 
-/**
- * Sanitize data from localStorage to prevent tampering
- */
 export const sanitizeLocalStorageData = (data: unknown): unknown => {
-  // Only allow specific types
   if (data === null || data === undefined) {
     return data;
   }
