@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router";
+import Link from "next/link";
 import { ShoppingCart, Store } from "lucide-react";
 import { useCart } from "../modules/cart/CartContext";
 import { Button } from "./ui/button";
@@ -13,7 +13,7 @@ export const Header: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link
-            to="/"
+            href="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <Store className="w-6 h-6" />
@@ -22,19 +22,19 @@ export const Header: React.FC = () => {
 
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              to="/"
+              href="/"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Products
             </Link>
             <Link
-              to="/about"
+              href="/about"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               About
             </Link>
             <Link
-              to="/contact"
+              href="/contact"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Contact
@@ -42,7 +42,7 @@ export const Header: React.FC = () => {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Link to="/cart">
+            <Link href="/cart">
               <Button variant="outline" size="sm" className="relative">
                 <ShoppingCart className="w-4 h-4" />
                 {cart.totalItems > 0 && (
