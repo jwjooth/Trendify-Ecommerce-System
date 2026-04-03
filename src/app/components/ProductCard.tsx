@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { ShoppingCart, Star, Eye, Heart } from "lucide-react";
 import { Product } from "../service/type";
 import { formatCurrency } from "../lib/currency";
@@ -16,7 +17,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -39,7 +40,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleDoubleClick = () => {
-    navigate(`/product/${product.id}`);
+    router.push(`/product?id=${product.id}`);
   };
 
   const handleQuickView = (e: React.MouseEvent) => {
@@ -48,9 +49,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-  };
+  // const closeModal = () => {
+  //   setShowModal(false);
+  // };
 
   return (
     <>
@@ -242,7 +243,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => navigate(`/product/${product.id}`)}
+                  onClick={() => router.push(`/product?id=${product.id}`)}
                 >
                   View Details
                 </Button>

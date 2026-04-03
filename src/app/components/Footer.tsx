@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React from "react";
+import Link from "next/link";
 
 export const Footer: React.FC = () => {
   return (
@@ -10,22 +10,34 @@ export const Footer: React.FC = () => {
             <h3 className="font-semibold mb-4">Shop</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   All Products
                 </Link>
               </li>
               <li>
-                <Link to="/?category=electronics" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/?category=electronics"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Electronics
                 </Link>
               </li>
               <li>
-                <Link to="/?category=clothing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/?category=clothing"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Clothing
                 </Link>
               </li>
               <li>
-                <Link to="/?category=home" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/?category=home"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Home & Living
                 </Link>
               </li>
@@ -36,22 +48,34 @@ export const Footer: React.FC = () => {
             <h3 className="font-semibold mb-4">Customer Service</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Contact Us
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Shipping Info
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Returns
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   FAQ
                 </a>
               </li>
@@ -62,22 +86,34 @@ export const Footer: React.FC = () => {
             <h3 className="font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link
+                  href="/about"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Careers
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
                   Terms of Service
                 </a>
               </li>
@@ -103,7 +139,9 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Trendify. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Trendify. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

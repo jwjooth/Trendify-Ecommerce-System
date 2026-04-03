@@ -91,14 +91,14 @@ export const ContactForm: React.FC<ContactFormProps> = ({ className }) => {
 
     try {
       // Sanitize all inputs before sending
-      const sanitizedData = {
-        name: sanitizeText(formData.name),
-        email: validateAndSanitizeEmail(formData.email).sanitized,
-        subject: sanitizeText(formData.subject),
-        message: sanitizeHtml(formData.message, {
-          ALLOWED_TAGS: ["p", "br", "strong", "em"],
-        }),
-      };
+      // const sanitizedData = {
+      //   name: sanitizeText(formData.name),
+      //   email: validateAndSanitizeEmail(formData.email).sanitized,
+      //   subject: sanitizeText(formData.subject),
+      //   message: sanitizeHtml(formData.message, {
+      //     ALLOWED_TAGS: ["p", "br", "strong", "em"],
+      //   }),
+      // };
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
