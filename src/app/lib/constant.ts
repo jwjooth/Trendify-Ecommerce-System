@@ -57,12 +57,13 @@ export const ROUTES = {
   PRODUCT_DETAIL: (id: string | number) => `/product?id=${id}`,
   CART: "/cart",
   CHECKOUT: "/checkout",
-  // ORDER_CONFIRMATION: (id: string | number) => `/order-confirmation/${id}`,
+  ORDER_CONFIRMATION: (id: string | number) => `/order-confirmation/${id}`,
   ABOUT: "/about",
   CONTACT: "/contact",
   NOT_FOUND: "/404",
 } as const;
 
+// maximize with yup, joi or zod
 export const VALIDATION = {
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   PHONE_REGEX: /^[\d\s\-\+\(\)]+$/,
@@ -77,12 +78,13 @@ export const stats = [
   { label: "Customer Rating", value: "4.9/5", icon: Star },
 ];
 
+// waiting api for be
 export const team = [
   {
-    name: "Claude",
-    role: "Vibe Coder",
-    bio: "Productive vibe coder. Bringing apps to life with Replit Agent. 💡 Shipped with taste.",
-    avatar: "VC",
+    name: "Roger Mampu Rejeki",
+    role: "CTO & Co-Founder",
+    bio: "Passionate about creating project shopping experiences as Backend Developer",
+    avatar: "RMR",
   },
   {
     name: "Jordan Theovandy",
@@ -94,6 +96,12 @@ export const team = [
     name: "GitHub Copilot",
     role: "Vibe Coder",
     bio: "0 to 1 with AI in minutes. Professional Vibe Coder & Product Strategist.",
+    avatar: "VC",
+  },
+  {
+    name: "Claude",
+    role: "Vibe Coder",
+    bio: "Productive vibe coder. Bringing apps to life with Replit Agent. 💡 Shipped with taste.",
     avatar: "VC",
   },
   {
