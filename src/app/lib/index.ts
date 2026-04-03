@@ -1,6 +1,6 @@
 export const API_CONFIG = {
   BASE_URL:
-    import.meta.env.VITE_API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
     "https://6872883376a5723aacd50d06.mockapi.io",
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
@@ -33,8 +33,8 @@ export const DELAYS = {
 } as const;
 
 // Environment
-export const IS_DEVELOPMENT = import.meta.env.DEV;
-export const IS_PRODUCTION = import.meta.env.PROD;
+export const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
+export const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export const logger = {
   debug: (message: string, data?: unknown) => {
