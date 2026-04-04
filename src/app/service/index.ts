@@ -7,17 +7,18 @@ import {
   Testimonial,
 } from "./type";
 
+// waiting api from be
 const API_BASE_URL =
-  import.meta.env.VITE_PRODUCTS_URL ||
+  process.env.NEXT_PUBLIC_PRODUCTS_URL ||
   "https://6872883376a5723aacd50d06.mockapi.io/product";
 const CATEGORIES_URL =
-  import.meta.env.VITE_CATEGORIES_URL ||
+  process.env.NEXT_PUBLIC_CATEGORIES_URL ||
   "https://6872883376a5723aacd50d06.mockapi.io/categories";
 const FAQS_URL =
-  import.meta.env.VITE_FAQS_URL ||
+  process.env.NEXT_PUBLIC_FAQS_URL ||
   "https://69bd41b72bc2a25b22ae1242.mockapi.io/faqs";
 const TESTIMONIAL_URL =
-  import.meta.env.VITE_TESTIMONIALS_URL ||
+  process.env.NEXT_PUBLIC_TESTIMONIALS_URL ||
   "https://69bd41b72bc2a25b22ae1242.mockapi.io/testimonials";
 
 interface CacheEntry {
