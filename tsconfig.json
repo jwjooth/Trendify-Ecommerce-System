@@ -1,64 +1,37 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+
     "jsx": "preserve",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
+
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
     "strict": true,
     "noEmit": true,
+
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "incremental": true,
-    "allowJs": true,
+
+    "resolveJsonModule": true,
+    "allowJs": false,
+
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
+
+    "forceConsistentCasingInFileNames": true,
+
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@components/*": [
-        "src/app/components/*"
-      ],
-      "@modules/*": [
-        "src/app/modules/*"
-      ],
-      "@lib/*": [
-        "src/app/lib/*"
-      ],
-      "@service/*": [
-        "src/app/service/*"
-      ],
-      "@utils/*": [
-        "src/app/utils/*"
-      ],
-      "@styles/*": [
-        "src/styles/*"
-      ]
+      "@/*": ["./src/*"]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+
+    "plugins": [{ "name": "next" }]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+
+  "include": ["next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
