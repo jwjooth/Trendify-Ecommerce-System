@@ -102,3 +102,8 @@ export interface ProductFilters {
 }
 
 export type SortOption = "price-asc" | "price-desc" | "rating" | "newest";
+
+export interface SavedItem {
+  product: Product;
+  quantity: number;
+}
