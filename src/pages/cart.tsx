@@ -1,8 +1,8 @@
-import { useCartPage } from "./hooks/useCartPage";
-import { CartItem } from "./components/CartItem";
-import { CartSummary } from "./components/CartSummary";
+import { CartItem } from "../app/features/cart/components/CartItem";
+import { CartSummary } from "../app/features/cart/components/CartSummary";
+import { useCartPage } from "../app/features/cart/hooks/useCartPage";
 
-export const CartPage = () => {
+const CartPage = () => {
   const { cart, handlers } = useCartPage();
 
   if (cart.items.length === 0) {
@@ -21,3 +21,5 @@ export const CartPage = () => {
     </div>
   );
 };
+
+export default CartPage;

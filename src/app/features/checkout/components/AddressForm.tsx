@@ -1,17 +1,18 @@
-import React, { memo } from "react";
-import { MapPin } from "lucide-react";
-import { Address } from "../../service/type";
-import { CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+import { Address } from "@/app/service/type";
+import { CardContent, CardHeader, CardTitle } from "@/app/shared/ui/card";
+import { Input } from "@/app/shared/ui/input";
+import { Label } from "@/app/shared/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
+} from "@/app/shared/ui/select";
+import { MapPin } from "lucide-react";
+import React, { memo } from "react";
 
+// waiitng api from be
 const COUNTRY_OPTIONS = [
   { value: "United States", label: "🇺🇸 United States" },
   { value: "Canada", label: "🇨🇦 Canada" },
@@ -130,10 +131,7 @@ export const AddressForm: React.FC<AddressFormProps> = memo(
 
             <div>
               <Label htmlFor={`${id}-country`}>Country *</Label>
-              <Select
-                value={address.country}
-                onValueChange={(value) => onChange("country", value)}
-              >
+              <Select value={address.country} onValueChange={(value) => onChange("country", value)}>
                 <SelectTrigger id={`${id}-country`}>
                   <SelectValue />
                 </SelectTrigger>
@@ -150,7 +148,7 @@ export const AddressForm: React.FC<AddressFormProps> = memo(
         </CardContent>
       </>
     );
-  }
+  },
 );
 
 AddressForm.displayName = "AddressForm";

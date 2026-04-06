@@ -51,10 +51,7 @@ export const validatePhone = (phone: string): ValidationResult => {
   };
 };
 
-export const validatePostalCode = (
-  code: string,
-  country = "US",
-): ValidationResult => {
+export const validatePostalCode = (code: string, country = "US"): ValidationResult => {
   const errors: string[] = [];
 
   if (!code || typeof code !== "string") {
@@ -67,9 +64,7 @@ export const validatePostalCode = (
   if (country === "US") {
     const usZipRegex = /^\d{5}(?:-\d{4})?$/;
     if (!usZipRegex.test(trimmed)) {
-      errors.push(
-        "US postal code must be 5 digits or 5+4 format (12345 or 12345-6789)",
-      );
+      errors.push("US postal code must be 5 digits or 5+4 format (12345 or 12345-6789)");
     }
   } else if (country === "CA") {
     const caZipRegex = /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i;
@@ -130,10 +125,7 @@ export const validateAddress = (address: {
     errors.push("State/Province is too short");
   }
 
-  const postalValidation = validatePostalCode(
-    address.postalCode,
-    address.country,
-  );
+  const postalValidation = validatePostalCode(address.postalCode, address.country);
   if (!postalValidation.isValid) {
     errors.push(...postalValidation.errors);
   }
@@ -222,10 +214,7 @@ export const validateCardExpiry = (expiryDate: string): ValidationResult => {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
 
-  if (
-    fullYear < currentYear ||
-    (fullYear === currentYear && monthNum < currentMonth)
-  ) {
+  if (fullYear < currentYear || (fullYear === currentYear && monthNum < currentMonth)) {
     errors.push("Card is expired");
   }
 
@@ -336,11 +325,7 @@ export const sanitizeLocalStorageData = (data: unknown): unknown => {
     return data;
   }
 
-  if (
-    typeof data === "string" ||
-    typeof data === "number" ||
-    typeof data === "boolean"
-  ) {
+  if (typeof data === "string" || typeof data === "number" || typeof data === "boolean") {
     return data;
   }
 

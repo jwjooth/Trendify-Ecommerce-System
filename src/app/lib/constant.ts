@@ -1,5 +1,5 @@
-import { Users, Store, Globe, Star } from "lucide-react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Award, Globe, Mail, MapPin, Phone, Shield, Star, Store, Users } from "lucide-react";
+import { useLoadingStore } from "../store/useLoadingStore";
 
 export const PRODUCT_CATEGORIES = [
   "electronics",
@@ -11,13 +11,7 @@ export const PRODUCT_CATEGORIES = [
   "accessories",
 ] as const;
 
-export const SORT_OPTIONS = [
-  "newest",
-  "price-low",
-  "price-high",
-  "rating",
-  "popular",
-] as const;
+export const SORT_OPTIONS = ["newest", "price-low", "price-high", "rating", "popular"] as const;
 
 export const PAYMENT_METHODS = [
   "credit_card",
@@ -27,13 +21,7 @@ export const PAYMENT_METHODS = [
   "sample_payment",
 ] as const;
 
-export const ORDER_STATUS = [
-  "pending",
-  "processing",
-  "shipped",
-  "delivered",
-  "cancelled",
-] as const;
+export const ORDER_STATUS = ["pending", "processing", "shipped", "delivered", "cancelled"] as const;
 
 export const ERROR_MESSAGES = {
   GENERIC: "An unexpected error occurred. Please try again.",
@@ -162,3 +150,52 @@ export const hours = [
   },
   { day: "Sunday", time: "Closed", variant: "outline" as const },
 ];
+
+export const createInitialTableState = () => ({
+  page: 0,
+  limit: 10,
+  total_rows: 0,
+  data: [],
+});
+
+export const credibility = [
+  {
+    icon: Store,
+    title: "Quality Products",
+    desc: "Every product is carefully selected and tested.",
+  },
+  {
+    icon: Users,
+    title: "Customer First",
+    desc: "Our dedicated support team is always ready to help.",
+  },
+  {
+    icon: Award,
+    title: "Best Value",
+    desc: "Competitive pricing without compromising quality.",
+  },
+  {
+    icon: Shield,
+    title: "Secure Shopping",
+    desc: "Bank-level security keeps your data safe.",
+  },
+];
+
+export const createInitialFormdData = () => ({
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+});
+
+export const showLoading = useLoadingStore((s) => s.showLoading);
+export const hideLoading = useLoadingStore((s) => s.hideLoading);
+
+export const DEBOUNCE_DELAY = 300;
+export const PRODUCTS_GRID_COLS = {
+  sm: 1,
+  md: 2,
+  lg: 3,
+  xl: 4,
+};
+export const SKELETON_ITEMS_COUNT = 8;

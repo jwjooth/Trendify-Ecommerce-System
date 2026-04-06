@@ -1,16 +1,16 @@
-import React, { memo } from "react";
-import { Lock, Shield } from "lucide-react";
-import { PaymentMethod } from "../../service/type";
-import { CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+import { PaymentMethod } from "@/app/service/type";
+import { CardContent, CardHeader, CardTitle } from "@/app/shared/ui/card";
+import { Input } from "@/app/shared/ui/input";
+import { Label } from "@/app/shared/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
+} from "@/app/shared/ui/select";
+import { Lock, Shield } from "lucide-react";
+import React, { memo } from "react";
 
 const PAYMENT_OPTIONS = [
   { value: "credit_card", label: "💳 Credit Card" },
@@ -23,7 +23,9 @@ const PAYMENT_OPTIONS = [
 
 const CARD_PAYMENT_METHODS: PaymentMethod[] = ["credit_card", "debit_card"];
 
-const PAYMENT_INFO_MAP: Partial<Record<PaymentMethod, { bg: string; text: string; message: string }>> = {
+const PAYMENT_INFO_MAP: Partial<
+  Record<PaymentMethod, { bg: string; text: string; message: string }>
+> = {
   paypal: {
     bg: "bg-blue-50",
     text: "text-blue-700",
@@ -86,12 +88,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = memo(
             <div className="space-y-4 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
               <div>
                 <Label htmlFor="cardNumber">Card Number *</Label>
-                <Input
-                  id="cardNumber"
-                  placeholder="1234 5678 9012 3456"
-                  maxLength={19}
-                  required
-                />
+                <Input id="cardNumber" placeholder="1234 5678 9012 3456" maxLength={19} required />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -119,15 +116,13 @@ export const PaymentForm: React.FC<PaymentFormProps> = memo(
 
           {alternativeInfo && (
             <div className={`p-4 border rounded-lg ${alternativeInfo.bg}`}>
-              <p className={`text-sm ${alternativeInfo.text}`}>
-                {alternativeInfo.message}
-              </p>
+              <p className={`text-sm ${alternativeInfo.text}`}>{alternativeInfo.message}</p>
             </div>
           )}
         </CardContent>
       </>
     );
-  }
+  },
 );
 
 PaymentForm.displayName = "PaymentForm";

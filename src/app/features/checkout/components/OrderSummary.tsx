@@ -1,16 +1,11 @@
-import React, { memo } from "react";
+import { formatCurrency } from "@/app/lib/currency";
+import { Badge } from "@/app/shared/ui/badge";
+import { Button } from "@/app/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/shared/ui/card";
+import { Separator } from "@/app/shared/ui/separator";
 import { CheckCircle, CreditCard, Lock, Shield, Truck } from "lucide-react";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import { Separator } from "../../components/ui/separator";
-import { useCart } from "../../modules/cart/CartContext";
-import { formatCurrency } from "../../lib/currency";
+import React, { memo } from "react";
+import { useCart } from "../../cart/CartContext";
 
 interface OrderSummaryProps {
   tax: number;
@@ -47,9 +42,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = memo(
                   loading="lazy"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium line-clamp-2">
-                    {item.product.name}
-                  </p>
+                  <p className="text-sm font-medium line-clamp-2">{item.product.name}</p>
                   <p className="text-xs text-muted-foreground">
                     Qty: {item.quantity} × {formatCurrency(item.product.price)}
                   </p>
@@ -96,9 +89,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = memo(
 
           <div className="flex justify-between items-center">
             <span className="font-semibold text-lg">Total</span>
-            <span className="text-3xl font-bold text-primary">
-              {formatCurrency(total)}
-            </span>
+            <span className="text-3xl font-bold text-primary">{formatCurrency(total)}</span>
           </div>
 
           {/* Trust Badges */}
@@ -125,7 +116,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = memo(
         </CardContent>
       </Card>
     );
-  }
+  },
 );
 
 OrderSummary.displayName = "OrderSummary";

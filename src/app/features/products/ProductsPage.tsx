@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { handleError } from "@/app/lib/api";
+import { getAllCategories } from "@/app/service/categories";
+import { Categories } from "@/app/service/categories/type";
+import { Product } from "@/app/service/products/type";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { ProductCard } from "../../shared/layout/ProductCard";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useProducts } from "../../shared/hooks/useProducts";
-import { getCategories } from "../../service";
-import {
-  Product,
-  ProductCategory,
-  ProductFilters,
-  SortOption,
-  Category,
-} from "../../service/type";
+import { ProductCard } from "../../shared/layout/ProductCard";
+import { Badge } from "../../shared/ui/badge";
+import { Button } from "../../shared/ui/button";
 import { Input } from "../../shared/ui/input";
 import {
   Select,
@@ -19,48 +17,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../shared/ui/select";
-import { Button } from "../../shared/ui/button";
-import { Badge } from "../../shared/ui/badge";
-
-const DEFAULT_CATEGORIES: { value: ProductCategory; label: string }[] = [
-  { value: "electronics", label: "Electronics" },
-  { value: "clothing", label: "Clothing" },
-  { value: "books", label: "Books" },
-  { value: "home", label: "Home" },
-  { value: "sports", label: "Sports" },
-  { value: "beauty", label: "Beauty" },
-  { value: "accessories", label: "Accessories" },
-];
 
 export const ProductsPage = () => {
   const searchParams = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams?.get("search") || "",
+  const [searchQuery, setSearchQuery] = useState(searchParams?.get("search") || "");
+  const [selectedCategory, setSelectedCategory] = useState<Categories | undefined>(
+    (searchParams?.get("category") as Categories) || undefined,
   );
-  const [selectedCategory, setSelectedCategory] = useState<
-    ProductCategory | undefined
-  >((searchParams?.get("category") as ProductCategory) || undefined);
-  const [categories, setCategories] =
-    useState<{ value: ProductCategory; label: string }[]>(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<{ value: Categories; label: string }[]>();
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<SortOption>("newest");
-
-  const filters: ProductFilters = {
-    searchQuery: searchQuery || undefined,
-    category: selectedCategory,
-  };
 
   const { products, loading, error, totalCount } = useProducts(filters, sortBy);
 
   useEffect(() => {
-    const loadCategories = async () => {
+    const loadCategories = async (page: number, page_limit: number) => {
       setCategoriesLoading(true);
       setCategoriesError(null);
-
       try {
-        const data = await getCategories();
+        const data = await getAllCategories({ page, page_limit });
         if (data?.length) {
           const sanitized = data
             .filter((item): item is Category => !!item?.name)
@@ -73,10 +49,9 @@ export const ProductsPage = () => {
             setCategories(sanitized);
           }
         }
-      } catch (err) {
-        setCategoriesError(
-          err instanceof Error ? err.message : "Failed to load categories",
-        );
+      } catch (error) {
+        setCategoriesError(error instanceof Error ? error.message : "Failed to load categories");
+        handleError(error);
       } finally {
         setCategoriesLoading(false);
       }
@@ -94,7 +69,7 @@ export const ProductsPage = () => {
     }
   };
 
-  const handleCategoryChange = (category: ProductCategory | "all") => {
+  const handleCategoryChange = (category: Categories | "all") => {
     const newCategory = category === "all" ? undefined : category;
     setSelectedCategory(newCategory);
     const params = new URLSearchParams(searchParams ?? "");
@@ -116,9 +91,7 @@ export const ProductsPage = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Discover Products</h1>
-        <p className="text-muted-foreground">
-          Browse our curated collection of premium products
-        </p>
+        <p className="text-muted-foreground">Browse our curated collection of premium products</p>
       </div>
       <div className="mb-8 space-y-4">
         <div className="flex flex-col md:flex-row gap-4">
@@ -133,9 +106,7 @@ export const ProductsPage = () => {
           </div>
           <Select
             value={selectedCategory || "all"}
-            onValueChange={(value) =>
-              handleCategoryChange(value as ProductCategory | "all")
-            }
+            onValueChange={(value) => handleCategoryChange(value as Categories | "all")}
           >
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Category" />
@@ -161,10 +132,7 @@ export const ProductsPage = () => {
           </Select>
 
           {/* Sort */}
-          <Select
-            value={sortBy}
-            onValueChange={(value) => setSortBy(value as SortOption)}
-          >
+          <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -178,12 +146,8 @@ export const ProductsPage = () => {
         </div>
         {hasActiveFilters && (
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm text-muted-foreground">
-              Active filters:
-            </span>
-            {searchQuery && (
-              <Badge variant="secondary">Search: {searchQuery}</Badge>
-            )}
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            {searchQuery && <Badge variant="secondary">Search: {searchQuery}</Badge>}
             {selectedCategory && (
               <Badge variant="secondary" className="capitalize">
                 {selectedCategory}
@@ -235,9 +199,7 @@ export const ProductsPage = () => {
         <div className="text-center py-16">
           <SlidersHorizontal className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">No products found</h3>
-          <p className="text-muted-foreground mb-4">
-            Try adjusting your filters or search query
-          </p>
+          <p className="text-muted-foreground mb-4">Try adjusting your filters or search query</p>
           <Button onClick={clearFilters}>Clear Filters</Button>
         </div>
       )}

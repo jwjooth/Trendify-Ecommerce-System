@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import Link from "next/link";
+import { Eye, Heart, ShoppingCart, Star } from "lucide-react";
 import { useRouter } from "next/router";
-import { ShoppingCart, Star, Eye, Heart } from "lucide-react";
-import { Product } from "../../service/type";
-import { formatCurrency } from "../../lib/currency";
+import React, { useState } from "react";
+import { toast } from "sonner";
 import { useCart } from "../../features/cart/CartContext";
+import { formatCurrency } from "../../lib/currency";
+import { Product } from "../../service/type";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
-import { Badge } from "../ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { toast } from "sonner";
 
 interface ProductCardProps {
   product: Product;
@@ -33,9 +32,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     e.stopPropagation();
     setIsWishlisted(!isWishlisted);
     toast.success(
-      isWishlisted
-        ? `${product.name} removed from wishlist`
-        : `${product.name} added to wishlist`,
+      isWishlisted ? `${product.name} removed from wishlist` : `${product.name} added to wishlist`,
     );
   };
 
@@ -55,10 +52,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <>
-      <div
-        className="block group cursor-pointer"
-        onDoubleClick={handleDoubleClick}
-      >
+      <div className="block group cursor-pointer" onDoubleClick={handleDoubleClick}>
         <Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           {/* Wishlist Button */}
           <button
@@ -67,9 +61,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           >
             <Heart
               className={`w-4 h-4 ${
-                isWishlisted
-                  ? "fill-red-500 text-red-500"
-                  : "text-gray-600 hover:text-red-500"
+                isWishlisted ? "fill-red-500 text-red-500" : "text-gray-600 hover:text-red-500"
               }`}
             />
           </button>
@@ -113,9 +105,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 )}
               </div>
 
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {product.description}
-              </p>
+              <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
 
               <div className="flex items-center gap-1">
                 <div className="flex">
@@ -130,18 +120,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     />
                   ))}
                 </div>
-                <span className="text-sm font-medium ml-1">
-                  {product.rating}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  ({product.reviewCount})
-                </span>
+                <span className="text-sm font-medium ml-1">{product.rating}</span>
+                <span className="text-sm text-muted-foreground">({product.reviewCount})</span>
               </div>
 
               <div className="flex items-center justify-between pt-2">
-                <span className="text-2xl font-bold">
-                  {formatCurrency(product.price)}
-                </span>
+                <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
                 <Badge variant="secondary" className="capitalize">
                   {product.category}
                 </Badge>
@@ -202,14 +186,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   ))}
                 </div>
                 <span className="font-medium ml-2">{product.rating}</span>
-                <span className="text-muted-foreground ml-1">
-                  ({product.reviewCount} reviews)
-                </span>
+                <span className="text-muted-foreground ml-1">({product.reviewCount} reviews)</span>
               </div>
 
-              <p className="text-muted-foreground leading-relaxed">
-                {product.description}
-              </p>
+              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
 
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
@@ -218,11 +198,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Stock:</span>
-                  <span
-                    className={
-                      product.stock < 20 ? "text-orange-600 font-medium" : ""
-                    }
-                  >
+                  <span className={product.stock < 20 ? "text-orange-600 font-medium" : ""}>
                     {product.stock} available
                   </span>
                 </div>
@@ -233,18 +209,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </div>
 
               <div className="flex gap-3 pt-4">
-                <Button
-                  onClick={handleAddToCart}
-                  className="flex-1"
-                  disabled={product.stock === 0}
-                >
+                <Button onClick={handleAddToCart} className="flex-1" disabled={product.stock === 0}>
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => router.push(`/product?id=${product.id}`)}
-                >
+                <Button variant="outline" onClick={() => router.push(`/product?id=${product.id}`)}>
                   View Details
                 </Button>
               </div>

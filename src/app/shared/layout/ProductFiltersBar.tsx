@@ -1,6 +1,5 @@
-import React, { memo, useCallback } from "react";
-import { Search } from "lucide-react";
-import type { ProductCategory, SortOption } from "@service/type";
+import { SORT_OPTIONS } from "@/app/lib/constant";
+import { ProductCategory, SortOption } from "@/app/service/type";
 import { Input } from "@/app/shared/ui/input";
 import {
   Select,
@@ -9,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/shared/ui/select";
-import { SORT_OPTIONS } from "@lib/constants";
+import { Search } from "lucide-react";
+import React, { memo, useCallback } from "react";
 
 interface CategoryOption {
   value: ProductCategory;
@@ -48,9 +48,7 @@ export const ProductFiltersBar = memo<ProductFiltersBarProps>(
 
     const handleCategoryChange = useCallback(
       (value: string) => {
-        onCategoryChange(
-          value === "all" ? undefined : (value as ProductCategory),
-        );
+        onCategoryChange(value === "all" ? undefined : (value as ProductCategory));
       },
       [onCategoryChange],
     );
@@ -79,14 +77,8 @@ export const ProductFiltersBar = memo<ProductFiltersBarProps>(
           </div>
 
           {/* Category Select */}
-          <Select
-            value={selectedCategory || "all"}
-            onValueChange={handleCategoryChange}
-          >
-            <SelectTrigger
-              className="w-full md:w-48"
-              aria-label="Filter by category"
-            >
+          <Select value={selectedCategory || "all"} onValueChange={handleCategoryChange}>
+            <SelectTrigger className="w-full md:w-48" aria-label="Filter by category">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -106,10 +98,7 @@ export const ProductFiltersBar = memo<ProductFiltersBarProps>(
 
           {/* Sort Select */}
           <Select value={sortBy} onValueChange={handleSortChange}>
-            <SelectTrigger
-              className="w-full md:w-48"
-              aria-label="Sort products"
-            >
+            <SelectTrigger className="w-full md:w-48" aria-label="Sort products">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>

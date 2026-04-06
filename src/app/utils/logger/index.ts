@@ -39,8 +39,7 @@ class ErrorLogger {
       context: {
         ...context,
         url: typeof window !== "undefined" ? window.location.href : undefined,
-        userAgent:
-          typeof navigator !== "undefined" ? navigator.userAgent : undefined,
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
       },
       stack: error?.stack,
     };
@@ -67,27 +66,15 @@ class ErrorLogger {
     this.log("INFO", message, context);
   }
 
-  warn(
-    message: string,
-    context?: Record<string, unknown>,
-    error?: Error,
-  ): void {
+  warn(message: string, context?: Record<string, unknown>, error?: Error): void {
     this.log("WARN", message, context, error);
   }
 
-  error(
-    message: string,
-    context?: Record<string, unknown>,
-    error?: Error,
-  ): string {
+  error(message: string, context?: Record<string, unknown>, error?: Error): string {
     return this.log("ERROR", message, context, error);
   }
 
-  critical(
-    message: string,
-    context?: Record<string, unknown>,
-    error?: Error,
-  ): string {
+  critical(message: string, context?: Record<string, unknown>, error?: Error): string {
     return this.log("CRITICAL", message, context, error);
   }
 
@@ -96,9 +83,7 @@ class ErrorLogger {
     this.errors.forEach((errorLogs) => {
       allErrors.push(...errorLogs);
     });
-    return allErrors.sort(
-      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
-    );
+    return allErrors.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
   getErrorsByType(message: string): ErrorLog[] {
@@ -168,8 +153,8 @@ class ErrorLogger {
         return console.log;
     }
   }
-  private reportToExternalService(errorLog: ErrorLog): void {
-    
+  private reportToExternalService(errorLog: ErrorLog) {
+    return errorLog;
   }
 }
 

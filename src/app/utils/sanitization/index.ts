@@ -93,10 +93,7 @@ export const sanitizeUrl = (url: string): string => {
  * @param defaultValue - Default value if conversion fails
  * @returns Sanitized number
  */
-export const sanitizeNumber = (
-  input: any,
-  defaultValue: number = 0,
-): number => {
+export const sanitizeNumber = (input: any, defaultValue: number = 0): number => {
   const num = Number(input);
   return isNaN(num) || !isFinite(num) ? defaultValue : num;
 };

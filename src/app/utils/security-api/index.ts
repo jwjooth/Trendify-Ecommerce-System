@@ -72,12 +72,7 @@ export class SecureApiClient {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          return await this.handleErrorResponse<T>(
-            response,
-            url,
-            config,
-            retries,
-          );
+          return await this.handleErrorResponse<T>(response, url, config, retries);
         }
 
         const data = await this.parseResponse<T>(response);
@@ -121,19 +116,11 @@ export class SecureApiClient {
     return this.request<T>(url, { method: "GET", headers });
   }
 
-  async post<T = unknown>(
-    url: string,
-    body: unknown,
-    headers?: Record<string, string>,
-  ) {
+  async post<T = unknown>(url: string, body: unknown, headers?: Record<string, string>) {
     return this.request<T>(url, { method: "POST", body, headers });
   }
 
-  async put<T = unknown>(
-    url: string,
-    body: unknown,
-    headers?: Record<string, string>,
-  ) {
+  async put<T = unknown>(url: string, body: unknown, headers?: Record<string, string>) {
     return this.request<T>(url, { method: "PUT", body, headers });
   }
 

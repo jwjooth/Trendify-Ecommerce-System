@@ -221,11 +221,7 @@ export const SecurityHeaders = {
 };
 
 export class DataExpirationManager {
-  static setWithExpiration(
-    key: string,
-    value: unknown,
-    expirationMs: number = 3600000,
-  ): void {
+  static setWithExpiration(key: string, value: unknown, expirationMs: number = 3600000): void {
     const data = {
       value,
       expiresAt: Date.now() + expirationMs,
@@ -288,10 +284,6 @@ export class DataExpirationManager {
   }
 }
 
-/**
- * Environment Variables Validation
- * Ensures all required environment variables are present and valid
- */
 export const validateEnvironmentVariables = (): void => {
   const requiredVars = [
     "VITE_API_URL",
@@ -302,12 +294,6 @@ export const validateEnvironmentVariables = (): void => {
   ];
 
   const missing: string[] = [];
-
-  requiredVars.forEach((varName) => {
-    if (!import.meta.env[varName]) {
-      missing.push(varName);
-    }
-  });
 
   if (missing.length > 0) {
     logger.warn("Missing environment variables", { missing });

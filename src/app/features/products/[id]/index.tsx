@@ -1,6 +1,6 @@
+import { useProducts } from "@/app/shared/hooks/useProducts";
 import { useMemo } from "react";
 import { ProductFilters } from "../components/ProductFilters";
-import { useProducts } from "@/app/shared/hooks/useProducts";
 import { ProductGrid } from "../components/ProductGrid";
 import { ProductSkeleton } from "../components/ProductSkeleton";
 import { useCategories } from "../hook/useCategories";
@@ -18,25 +18,14 @@ export default function ProductsPage() {
     [filtersState.debouncedSearch, filtersState.category],
   );
 
-  const { products, loading, error, totalCount } = useProducts(
-    filters,
-    filtersState.sort,
-  );
+  const { products, loading, error, totalCount } = useProducts(filters, filtersState.sort);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <ProductFilters
-        {...filtersState}
-        categories={categories}
-        categoriesLoading={catLoading}
-      />
+      <ProductFilters {...filtersState} categories={categories} categoriesLoading={catLoading} />
 
       <div className="mt-6 text-sm text-muted-foreground">
-        {loading
-          ? "Loading..."
-          : error
-            ? `Error: ${error}`
-            : `Showing ${totalCount} products`}
+        {loading ? "Loading..." : error ? `Error: ${error}` : `Showing ${totalCount} products`}
       </div>
 
       <div className="mt-6">

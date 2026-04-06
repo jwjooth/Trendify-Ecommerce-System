@@ -1,12 +1,7 @@
-/**
- * useProductFilters Hook
- * Manages product filtering logic with proper state and URL synchronization
- */
-
-import { useCallback, useEffect, useState } from "react";
+import { DEBOUNCE_DELAY } from "@/app/lib/constants";
+import { ProductCategory, SortOption } from "@/app/service/type";
 import { useRouter } from "next/router";
-import type { ProductCategory, SortOption } from "@service/type";
-import { DEBOUNCE_DELAY } from "@lib/constants";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseProductFiltersReturn {
   searchQuery: string;
@@ -26,13 +21,11 @@ interface UseProductFiltersReturn {
 export const useProductFilters = (): UseProductFiltersReturn => {
   const router = useRouter();
   const [searchQuery, setSearchQueryState] = useState("");
-  const [selectedCategory, setSelectedCategoryState] = useState<
-    ProductCategory | undefined
-  >(undefined);
-  const [sortBy, setSortByState] = useState<SortOption>("newest");
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
-    null
+  const [selectedCategory, setSelectedCategoryState] = useState<ProductCategory | undefined>(
+    undefined,
   );
+  const [sortBy, setSortByState] = useState<SortOption>("newest");
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Initialize from URL query parameters
   useEffect(() => {
@@ -55,11 +48,7 @@ export const useProductFilters = (): UseProductFiltersReturn => {
 
   // Sync filters to URL with debouncing for search
   const syncToUrl = useCallback(
-    (
-      search: string,
-      cat: ProductCategory | undefined,
-      sort: SortOption
-    ) => {
+    (search: string, cat: ProductCategory | undefined, sort: SortOption) => {
       const params = new URLSearchParams();
 
       if (search) params.set("search", search);
@@ -73,10 +62,10 @@ export const useProductFilters = (): UseProductFiltersReturn => {
           query: queryString ? `?${queryString}` : "",
         },
         undefined,
-        { shallow: true }
+        { shallow: true },
       );
     },
-    [router]
+    [router],
   );
 
   const setSearchQuery = useCallback(
@@ -91,7 +80,7 @@ export const useProductFilters = (): UseProductFiltersReturn => {
 
       setDebounceTimer(timer);
     },
-    [debounceTimer, selectedCategory, sortBy, syncToUrl]
+    [debounceTimer, selectedCategory, sortBy, syncToUrl],
   );
 
   const setSelectedCategory = useCallback(
@@ -99,7 +88,7 @@ export const useProductFilters = (): UseProductFiltersReturn => {
       setSelectedCategoryState(category);
       syncToUrl(searchQuery, category, sortBy);
     },
-    [searchQuery, sortBy, syncToUrl]
+    [searchQuery, sortBy, syncToUrl],
   );
 
   const setSortBy = useCallback(
@@ -107,7 +96,7 @@ export const useProductFilters = (): UseProductFiltersReturn => {
       setSortByState(sort);
       syncToUrl(searchQuery, selectedCategory, sort);
     },
-    [searchQuery, selectedCategory, syncToUrl]
+    [searchQuery, selectedCategory, syncToUrl],
   );
 
   const clearFilters = useCallback(() => {

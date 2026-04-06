@@ -1,15 +1,15 @@
-import type { NextPage } from "next";
-import { memo, useMemo, useCallback } from "react";
-import { SlidersHorizontal } from "lucide-react";
+import type { Product } from "@/app/service/type";
+import { useCategories } from "@/app/shared/hooks/useCategories";
+import { useProductFilters } from "@/app/shared/hooks/useProductFilters";
+import { useProducts } from "@/app/shared/hooks/useProducts";
 import { ProductCard } from "@/app/shared/layout/ProductCard";
 import { ProductFiltersBar } from "@/app/shared/layout/ProductFiltersBar";
 import { ProductGridSkeleton } from "@/app/shared/layout/ProductGridSkeleton";
-import { useProducts } from "@/app/shared/hooks/useProducts";
-import { useProductFilters } from "@/app/shared/hooks/useProductFilters";
-import { useCategories } from "@/app/shared/hooks/useCategories";
-import type { Product } from "@service/type";
-import { Button } from "@/app/shared/ui/button";
 import { Badge } from "@/app/shared/ui/badge";
+import { Button } from "@/app/shared/ui/button";
+import { SlidersHorizontal } from "lucide-react";
+import type { NextPage } from "next";
+import { memo, useCallback, useMemo } from "react";
 
 /**
  * Empty State Component
@@ -20,26 +20,22 @@ interface EmptyStateProps {
   hasActiveFilters: boolean;
 }
 
-const EmptyState = memo<EmptyStateProps>(
-  ({ onClearFilters, hasActiveFilters }) => (
-    <div className="text-center py-16">
-      <SlidersHorizontal className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-      <h3 className="text-lg font-semibold mb-2">
-        {hasActiveFilters ? "No products found" : "No products available"}
-      </h3>
-      <p className="text-muted-foreground mb-4">
-        {hasActiveFilters
-          ? "Try adjusting your filters or search query"
-          : "Please try again later"}
-      </p>
-      {hasActiveFilters && (
-        <Button onClick={onClearFilters} variant="outline">
-          Clear Filters
-        </Button>
-      )}
-    </div>
-  ),
-);
+const EmptyState = memo<EmptyStateProps>(({ onClearFilters, hasActiveFilters }) => (
+  <div className="text-center py-16">
+    <SlidersHorizontal className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+    <h3 className="text-lg font-semibold mb-2">
+      {hasActiveFilters ? "No products found" : "No products available"}
+    </h3>
+    <p className="text-muted-foreground mb-4">
+      {hasActiveFilters ? "Try adjusting your filters or search query" : "Please try again later"}
+    </p>
+    {hasActiveFilters && (
+      <Button onClick={onClearFilters} variant="outline">
+        Clear Filters
+      </Button>
+    )}
+  </div>
+));
 
 EmptyState.displayName = "EmptyState";
 
@@ -122,12 +118,7 @@ const ProductGrid = memo<ProductGridProps>(
     }
 
     if (products.length === 0) {
-      return (
-        <EmptyState
-          onClearFilters={onClearFilters}
-          hasActiveFilters={hasActiveFilters}
-        />
-      );
+      return <EmptyState onClearFilters={onClearFilters} hasActiveFilters={hasActiveFilters} />;
     }
 
     return (
@@ -169,11 +160,7 @@ const HomePage: NextPage = () => {
     clearFilters,
   } = useProductFilters();
 
-  const {
-    categories,
-    isLoading: categoriesLoading,
-    error: categoriesError,
-  } = useCategories();
+  const { categories, isLoading: categoriesLoading, error: categoriesError } = useCategories();
 
   // Fetch products based on filters (memoized to prevent unnecessary API calls)
   const filters = useMemo(
@@ -184,10 +171,7 @@ const HomePage: NextPage = () => {
     [searchQuery, selectedCategory],
   );
 
-  const { products, loading, error, totalCount, refetch } = useProducts(
-    filters,
-    sortBy,
-  );
+  const { products, loading, error, totalCount, refetch } = useProducts(filters, sortBy);
 
   // Memoized retry handler
   const handleRetry = useCallback(() => {
@@ -237,10 +221,7 @@ const HomePage: NextPage = () => {
         <div className="mb-6">
           {!loading && !error && (
             <p className="text-sm text-muted-foreground">
-              Showing{" "}
-              <span className="font-semibold text-foreground">
-                {totalCount}
-              </span>{" "}
+              Showing <span className="font-semibold text-foreground">{totalCount}</span>{" "}
               {totalCount === 1 ? "product" : "products"}
             </p>
           )}

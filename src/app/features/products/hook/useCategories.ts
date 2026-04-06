@@ -1,20 +1,18 @@
+import { handleError } from "@/app/lib/api";
+import { getAllCategories } from "@/app/service/categories";
 import { useEffect, useState } from "react";
-import { getCategories } from "@/app/service";
-import { Category, ProductCategory } from "@/app/service/type";
 
 export const useCategories = () => {
-  const [data, setData] = useState<{ value: ProductCategory; label: string }[]>(
-    [],
-  );
+  const [data, setData] = useState<{ value: ProductCategory; label: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
 
-    const fetch = async () => {
+    const fetch = async (page: number, page_limit: number) => {
       setLoading(true);
       try {
-        const res = await getCategories();
+        const res = await getAllCategories({ page, page_limit });
 
         if (!mounted) return;
 
@@ -27,6 +25,8 @@ export const useCategories = () => {
             })) || [];
 
         setData(mapped);
+      } catch (error) {
+        handleError(error);
       } finally {
         if (mounted) setLoading(false);
       }
